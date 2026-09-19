@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<!-- Civilbook — © 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.). Código proprietário, todos os direitos reservados. Uso/cópia/redistribuição sem autorização escrita é proibido (Lei 9.609/98 e 9.610/98). -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- acesso.html (18/set/2026) — destino dos links dos e-mails de login (convite, confirmação de cadastro,
+     link mágico, troca de senha, troca de e-mail). Modelos e ordem de publicação:
+     supabase/templates/email/README.md. Lógica e as regras que ela segue: js/acesso.js.
+     - noindex: página de passagem, com token na URL de chegada; não pode ir para o índice (tests/seo.check.mjs).
+       NÃO está no robots.txt de propósito: um Disallow impediria o robô de ler este noindex.
+     - no-referrer: o token_hash nunca vaza no cabeçalho Referer de nada que a página carregue ou abra.
+     - CSP sem 'unsafe-inline' em script e sem NENHUM domínio de terceiro: a página só fala com ela mesma e
+       com o Supabase (*.supabase.co), e só depois do clique. Nem os ícones do CDN entram aqui.
+     Travado em tests/acesso.check.mjs e tests/e2e/acesso.spec.js. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="theme-color" content="#185FA5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131417" media="(prefers-color-scheme: dark)">
+<title>Acesso à sua conta — Civilbook</title>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="css/style.css">
+<!-- ORDEM IMPORTA: js/acesso.js é o PRIMEIRO script e roda sem defer — tira o token da barra de endereço
+     antes de qualquer outro código existir. config.js e o supabase-js vendorizado vêm com defer (rodam antes
+     do DOMContentLoaded) e só são usados depois do clique. -->
+<script src="js/acesso.js"></script>
+<script src="js/config.js" defer></script>
+<script src="js/vendor/supabase.js" defer></script>
+<style>
+  [hidden] { display: none !important; }
+  body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+  .acesso-topo { display: flex; align-items: center; padding: 14px 16px; }
+  .acesso-topo .logo { text-decoration: none; color: inherit; }
+  .acesso-main { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 12px 16px 40px; }
+  @media (min-height: 700px) { .acesso-main { align-items: center; padding-top: 0; } }
+  .acesso-card { width: 100%; max-width: 440px; padding: 0; overflow: hidden; }
+  .acesso-faixa { height: 4px; background: var(--blue); }
+  .acesso-corpo { padding: 28px 26px 26px; }
+  @media (max-width: 420px) { .acesso-corpo { padding: 24px 18px 22px; } }
+  .acesso-icone { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; background: var(--blue-light); color: var(--blue); }
+  .acesso-icone.ok { background: var(--green-light); color: var(--green); }
+  .acesso-icone.erro { background: var(--amber-light); color: var(--amber); }
+  .acesso-icone svg { width: 26px; height: 26px; }
+  /* Regras de texto com o prefixo .acesso-card: sem ele, o ".card p" de css/style.css (13px, cinza) vence
+     por especificidade — a mensagem de erro da senha saía cinza (visto no preview em 18/set/2026). */
+  .acesso-card h1 { font-size: 21px; line-height: 1.3; font-weight: 700; margin: 0 0 10px; outline: none; }
+  /* overflow-wrap: e-mail comprido é uma palavra só; sem quebra, empurrava a página para 379 px numa tela de
+     360 (visto no preview em 18/set/2026, com a conta aparecendo no texto). */
+  .acesso-card .acesso-texto { font-size: 15px; line-height: 1.6; color: var(--text-2); margin: 0 0 18px; overflow-wrap: anywhere; }
+  .acesso-card .acesso-texto strong { color: var(--text); }
+  .acesso-botao { width: 100%; justify-content: center; }
+  .acesso-botao[disabled] { opacity: .7; cursor: progress; }
+  .acesso-card .acesso-nota { font-size: 12.5px; line-height: 1.55; color: var(--text-3); margin: 14px 0 0; }
+  .acesso-card .acesso-status { font-size: 13px; color: var(--text-2); margin: 10px 0 0; }
+  .acesso-card .acesso-status:empty { display: none; }
+  .acesso-card .acesso-erro-campo { color: var(--red); font-size: 13.5px; line-height: 1.5; margin: 0 0 12px; font-weight: 500; }
+  .acesso-card .acesso-conta { font-size: 13.5px; color: var(--text-2); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; margin: 0 0 16px; word-break: break-all; }
+  .acesso-mostrar { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--text-2); margin: -4px 0 16px; cursor: pointer; }
+  .acesso-mostrar input { width: 15px; height: 15px; accent-color: var(--blue); }
+  .acesso-acoes { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .acesso-acoes .btn { justify-content: center; text-decoration: none; }
+  .acesso-card .acesso-dica { font-size: 14px; line-height: 1.6; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin: 0 0 18px; overflow-wrap: anywhere; }
+  .acesso-card .acesso-dica a { color: var(--blue); }
+  .acesso-oculto { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .acesso-rodape { text-align: center; font-size: 12px; color: var(--text-3); padding: 0 16px 24px; }
+  .acesso-rodape a { color: var(--text-2); }
+  /* O foco vai para o título de cada etapa (leitor de tela anuncia a mudança), mas o título não é
+     controle: sem a borda de foco, que parecia um campo selecionado. Botões e campos mantêm a sua. */
+  .acesso-card h1[tabindex="-1"]:focus { outline: none; }
+</style>
+</head>
+<body>
+
+<header class="acesso-topo">
+  <a class="logo" href="index.html"><img class="logo-icon" src="icon.svg" alt=""><span>Civilbook</span></a>
+</header>
+
+<main class="acesso-main">
+  <div class="card acesso-card">
+    <div class="acesso-faixa"></div>
+    <div class="acesso-corpo">
+
+      <!-- Estado inicial: o JS troca por uma das etapas abaixo. Sem JS, fica a mensagem do noscript. -->
+      <section id="etapa-carregando">
+        <p class="acesso-texto" style="margin:0">Preparando…</p>
+        <noscript>
+          <p class="acesso-texto" style="margin:12px 0 0">Esta página precisa de JavaScript ligado para confirmar o seu acesso. Ligue o JavaScript no navegador e abra de novo o link do e-mail.</p>
+        </noscript>
+      </section>
+
+      <!-- 1. Confirmação: NADA vai ao servidor até o clique neste botão. -->
+      <section id="etapa-inicio" hidden>
+        <div class="acesso-icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <h1 id="conf-titulo" tabindex="-1">Confirmar acesso</h1>
+        <p class="acesso-texto" id="conf-texto"></p>
+        <!-- Aviso quando o navegador já tem uma conta aberta (regra 8 de js/acesso.js). -->
+        <p class="acesso-dica" id="conf-conta" hidden></p>
+        <button type="button" class="btn primary lg acesso-botao" id="btn-confirmar">Continuar</button>
+        <p class="acesso-status" id="conf-status" role="status" aria-live="polite"></p>
+        <p class="acesso-nota">Por segurança, nada acontece até você clicar. O link é pessoal e só funciona uma vez.</p>
+      </section>
+
+      <!-- 2. Senha nova (convite e troca de senha). -->
+      <section id="etapa-senha" hidden>
+        <div class="acesso-icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        </div>
+        <h1 id="senha-titulo" tabindex="-1">Crie a sua senha</h1>
+        <p class="acesso-texto" id="senha-texto"></p>
+        <form id="form-senha" method="post" action="#" novalidate>
+          <p class="acesso-conta" id="senha-conta" hidden></p>
+          <!-- Para o gerenciador de senhas do navegador salvar a senha no e-mail certo. -->
+          <input type="text" id="senha-usuario" class="acesso-oculto" autocomplete="username" tabindex="-1" aria-hidden="true" readonly>
+          <!-- Sem maxlength de propósito: o navegador CORTA em silêncio a senha colada acima do limite, e a conta
+               nasceria com um pedaço dela. O teto do servidor (72 bytes) é conferido no envio, com texto. -->
+          <div class="field">
+            <label for="senha-nova">Senha nova (mínimo 8 caracteres)</label>
+            <input type="password" id="senha-nova" autocomplete="new-password" minlength="8" required>
+          </div>
+          <div class="field">
+            <label for="senha-confirma">Repita a senha nova</label>
+            <input type="password" id="senha-confirma" autocomplete="new-password" minlength="8" required>
+          </div>
+          <label class="acesso-mostrar"><input type="checkbox" id="senha-mostrar"> Mostrar as senhas</label>
+          <p class="acesso-erro-campo" id="senha-erro" role="alert" hidden></p>
+          <button type="submit" class="btn primary lg acesso-botao" id="btn-salvar">Salvar senha e entrar</button>
+        </form>
+      </section>
+
+      <!-- 3. Tudo certo. -->
+      <section id="etapa-ok" hidden>
+        <div class="acesso-icone ok" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        </div>
+        <h1 id="ok-titulo" tabindex="-1">Tudo certo</h1>
+        <p class="acesso-texto" id="ok-texto"></p>
+        <p class="acesso-dica" id="ok-nota" hidden></p>
+        <div class="acesso-acoes">
+          <a class="btn primary lg acesso-botao" id="ok-ir" href="app.html">Abrir o Civilbook</a>
+          <a class="btn lg acesso-botao" id="ok-login" href="index.html#entrar" hidden>Ir para o login</a>
+        </div>
+      </section>
+
+      <!-- 4. Erro amigável (link vazio, desconhecido, incompleto, usado/expirado, sem conexão). -->
+      <section id="etapa-erro" hidden>
+        <div class="acesso-icone erro" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/></svg>
+        </div>
+        <h1 id="erro-titulo" tabindex="-1">Não foi possível abrir o link</h1>
+        <p class="acesso-texto" id="erro-texto"></p>
+        <p class="acesso-dica" id="erro-dica" hidden></p>
+        <p class="acesso-dica" id="erro-contato" hidden>Os contatos estão na <a href="privacidade.html">Política de Privacidade</a>.</p>
+        <div class="acesso-acoes">
+          <button type="button" class="btn primary lg acesso-botao" id="btn-tentar" hidden>Tentar de novo</button>
+          <a class="btn lg acesso-botao" id="erro-login" href="index.html#entrar">Ir para o login</a>
+          <a class="btn lg acesso-botao" href="index.html">Página inicial</a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<footer class="acesso-rodape">
+  <p>Civilbook · <a href="privacidade.html">Política de Privacidade</a> · <a href="termos.html">Termos de Uso</a></p>
+</footer>
+
+</body>
+</html>

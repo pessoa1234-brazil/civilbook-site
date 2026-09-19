@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<!-- Civilbook — © 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.). Código proprietário, todos os direitos reservados. Uso/cópia/redistribuição não autorizados são vedados. Ver LICENSE. -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#185FA5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131417" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Civilbook">
+<meta name="author" content="CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.)">
+<meta name="copyright" content="© 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.) — Civilbook. Todos os direitos reservados.">
+<meta name="robots" content="noindex, nofollow, noai, noimageai">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://esm.sh https://cdn.jsdelivr.net; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.sh https://cdn.jsdelivr.net https://api.crossref.org https://api.openalex.org; object-src 'none'; base-uri 'self'">
+<title>Civilbook — Referência técnica para a construção civil</title>
+<script>(function(){try{var t=localStorage.getItem('cb-theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<script>
+  // Vigia de boot lento — armado AQUI, antes de qualquer download. Os mais de 60 <script> síncronos do
+  // fim do <body> são justamente a parte lenta em rede ruim: armado depois deles (como era), o relógio só
+  // começava quando o pior já tinha passado — 9 s de logo + spinner sem nenhuma saída — e, com UM
+  // script preso, nunca começava. Timer dispara durante a espera de script (quem bloqueia é o parser,
+  // não o laço de eventos). Aos 8 s sem cbInit: o splash FICA (nada de <main> vazio entre cabeçalho e
+  // rodapé, o print do PWA de 17/set/2026) e ganha mensagem + "Tentar de novo". Não toca na autenticação.
+  (function () {
+    function vigia() {
+      if (window._cbBootOk) return;
+      var s = document.getElementById("cb-splash"), l = document.getElementById("cb-splash-lento");
+      if (!s || !l) { setTimeout(vigia, 500); return; }   // o <body> ainda nem chegou (um script do <head> preso)
+      if (!s.classList.contains("cb-hide")) l.hidden = false;
+    }
+    setTimeout(vigia, 8000);
+  })();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/config.js"></script>
+<script src="js/copyright.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/consent.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/a11y-icons.js"></script>
+<script src="js/ads.js"></script>
+</head>
+<!-- tem-tabbar: liga --tabbar-h no celular (css/style.css) — quem flutua sobe acima da barra inferior -->
+<body class="tem-tabbar">
+
+<!-- O splash cobre o app até cbInit. Se o boot passar de ~8 s, NÃO some às cegas (era o "Início vazio
+     entre cabeçalho e rodapé" do PWA): o vigia do <head> mostra #cb-splash-lento com "Tentar de novo". -->
+<div id="cb-splash" class="cb-splash">
+  <div class="cb-splash-mark"><img class="logo-icon" src="icon.svg" alt="Civilbook"><span>Civilbook</span></div>
+  <div class="cb-spin" aria-hidden="true"></div>
+  <div id="cb-splash-lento" class="cb-splash-lento" role="status" hidden>
+    <p>Está demorando mais que o normal — a conexão pode estar lenta. O app abre sozinho assim que responder.</p>
+    <button type="button" class="btn primary" onclick="location.reload()"><i class="ti ti-refresh"></i>Tentar de novo</button>
+  </div>
+</div>
+
+<!-- nav-app: escopo do cabeçalho compacto do celular (landing e admin também usam .nav).
+     nav-so-desktop: no celular, com sessão, o controle some do cabeçalho e reaparece no menu da conta. -->
+<header class="nav nav-app">
+  <div class="logo" onclick="navigate('home')">
+    <img class="logo-icon" src="icon.svg" alt="Civilbook">
+    <span>Civilbook</span>
+  </div>
+  <div class="nav-search">
+    <i class="ti ti-search"></i>
+    <input type="text" id="global-search" placeholder="Buscar normas, cálculos, materiais, SINAPI…" autocomplete="off" aria-label="Buscar no Civilbook">
+    <div id="search-results" class="search-results hidden"></div>
+  </div>
+  <div class="nav-right">
+    <button class="btn icon-only nav-so-desktop" data-theme-toggle onclick="THEME.toggle()" aria-label="Alternar tema"><i class="ti ti-moon-stars"></i></button>
+    <span id="user-menu" class="user-menu"></span>
+  </div>
+</header>
+
+<nav class="module-nav" id="module-nav">
+  <button data-module="home" class="active"><i class="ti ti-home"></i><span>Início</span></button>
+  <button data-module="assessor"><i class="ti ti-sparkles"></i><span>Assessor IA</span></button>
+  <button data-module="projetos"><i class="ti ti-folder"></i><span>Projetos</span></button>
+  <button data-module="calculadoras"><i class="ti ti-calculator"></i><span>Calculadoras</span></button>
+  <button data-module="normas"><i class="ti ti-book"></i><span>Normas</span></button>
+  <button data-module="sinapi"><i class="ti ti-receipt"></i><span>SINAPI e CUB</span></button>
+  <button data-module="materiais"><i class="ti ti-cube"></i><span>Materiais</span></button>
+  <button data-module="checklists"><i class="ti ti-clipboard-check"></i><span>Checklists</span></button>
+  <button data-module="laudos"><i class="ti ti-file-description"></i><span>Laudos</span></button>
+  <button data-module="avaliacao"><i class="ti ti-home-dollar"></i><span>Avaliação</span></button>
+  <button data-module="seguranca"><i class="ti ti-helmet"></i><span>Segurança do Trabalho</span></button>
+  <button data-module="manutencao"><i class="ti ti-tool"></i><span>Manutenções e Garantias</span></button>
+  <button data-module="rdo"><i class="ti ti-notebook"></i><span>Diário de Obra</span></button>
+  <button data-module="cronograma"><i class="ti ti-timeline-event"></i><span>Cronograma</span></button>
+  <button data-module="conferencia"><i class="ti ti-clipboard-list"></i><span>Conferência</span></button>
+  <button data-module="interacoes"><i class="ti ti-arrows-cross"></i><span>Interações</span></button>
+  <button data-module="tecnicas"><i class="ti ti-list-details"></i><span>Ações técnicas</span></button>
+  <button data-module="compras"><i class="ti ti-shopping-cart"></i><span>Compras</span></button>
+  <button data-module="corpo" id="nav-corpo"><i class="ti ti-users-group"></i><span>Corpo técnico</span></button>
+</nav>
+
+<!-- Esqueleto de carga: o 1º render (initApp → navigate) substitui tudo. É REDE DE SEGURANÇA, não a
+     correção do "Início vazio" (essa é o splash que não some às cegas): no fluxo normal fica sob o
+     splash e nunca é visto. Aparece só quando o splash sai antes do 1º render — hoje, o instante do
+     redirect para o login — e garante que um <main> vazio nunca volte a ser o que o usuário vê. -->
+<main id="app">
+  <div class="cb-esq" aria-busy="true">
+    <p class="cb-esq-msg" role="status">Carregando o Civilbook…</p>
+    <div class="skel" style="height:148px;border-radius:14px"></div>
+    <div class="skel" style="height:64px;border-radius:14px"></div>
+    <div class="cb-esq-grid"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>Civilbook MVP — ferramenta de apoio. Os resultados não substituem a análise de um profissional habilitado (responsável técnico). Sempre confira com as normas ABNT vigentes.</p>
+  <p style="margin-top:8px"><a href="privacidade.html" style="color:var(--blue)">Política de Privacidade</a> · <a href="termos.html" style="color:var(--blue)">Termos de Uso</a> · <a href="#" onclick="cbCookies.abrir();return false;" style="color:var(--blue)">Gerenciar cookies</a></p>
+  <p style="margin-top:8px;font-size:12px;color:var(--text-3)">© 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.) · Civilbook. Todos os direitos reservados.</p>
+</footer>
+
+<!-- Barra inferior do celular: 4 atalhos + "Mais" (folha com TODOS os módulos do #module-nav).
+     Quem manda nos atalhos é TABBAR_ATALHOS (js/app.js): TABBAR.montar() redesenha os 4 botões no boot
+     (ícone e módulo lidos do #module-nav). Os botões abaixo são o ESPELHO estático — ficam porque, se
+     este app.html chegar com um js/app.js antigo do cache (deploy recente), são eles que funcionam.
+     tests/tabbar-atalhos.check.mjs trava o espelho (ids, ordem e nomes iguais aos do js/app.js).
+     "Mais" sem TABBAR (mesmo cenário de versão misturada) leva à Início, que lista todos os módulos. -->
+<nav class="mobile-tabbar" id="mobile-tabbar" aria-label="Navegação principal">
+  <button type="button" data-module="home" class="active" aria-current="page" onclick="navigate('home')"><i class="ti ti-home"></i><span>Início</span></button>
+  <button type="button" data-module="assessor" onclick="navigate('assessor')"><i class="ti ti-sparkles"></i><span>Assessor</span></button>
+  <button type="button" data-module="calculadoras" onclick="navigate('calculadoras')"><i class="ti ti-calculator"></i><span>Cálculos</span></button>
+  <button type="button" data-module="sinapi" onclick="navigate('sinapi')"><i class="ti ti-receipt"></i><span>Custos</span></button>
+  <button type="button" id="tabbar-mais" class="tabbar-mais" aria-haspopup="dialog" aria-expanded="false" aria-label="Mais: abrir todos os módulos" onclick="if(typeof TABBAR!=='undefined')TABBAR.abrirMais();else navigate('home')"><i class="ti ti-layout-grid"></i><span>Mais</span></button>
+</nav>
+
+<script src="data/normas.js"></script>
+<!-- data/sinapi.js (~1,7 MB) NÃO é carregado aqui: js/sinapi.js o injeta sob demanda (lazy) -->
+<script src="data/cub.js"></script>
+<script src="data/param-pam.js"></script>
+<script src="data/param-escola.js"></script>
+<script src="data/materiais.js"></script>
+<script src="data/checklists.js"></script>
+<script src="data/laudos.js"></script>
+<script src="data/avaliacao.js"></script>
+<script src="data/nrs.js"></script>
+<script src="data/manutencao.js"></script>
+<script src="data/garantias.js"></script>
+<script src="data/conferencia.js"></script>
+<script src="data/interacoes.js"></script>
+<script src="data/tecnicas.js"></script>
+<script src="data/compras.js"></script>
+<script src="data/afiliados.js"></script>
+<script src="data/exemplo-obra.js"></script>
+<script src="js/exemplo.js"></script>
+<script src="js/calculadoras.js"></script>
+<script src="js/store.js"></script>
+<script src="js/manutencao.js"></script>
+<script src="js/manutencao2.js"></script>
+<script src="js/conformidade.js"></script>
+<script src="js/manual.js"></script>
+<script src="js/projetos.js"></script>
+<script src="js/rdo.js"></script>
+<script src="js/diario-motor.js"></script>
+<script src="js/diario.js"></script>
+<script src="js/cronograma.js"></script>
+<script src="js/orcamento.js"></script>
+<script src="js/parametrico.js"></script>
+<script src="js/sinapi-changelog.js"></script>
+<script src="js/manutencao-sla.js"></script>
+<script src="js/garantias.js"></script>
+<script src="js/conferencia.js"></script>
+<script src="js/compartilhar.js"></script>
+<script src="js/interacoes.js"></script>
+<script src="js/tecnicas.js"></script>
+<script src="js/compras.js"></script>
+<script src="js/avaliacao.js"></script>
+<script src="js/seguranca.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/metrics.js"></script>
+<script src="js/observar.js"></script>
+<script src="js/recomenda.js"></script>
+<script src="js/sinapi.js"></script>
+<script src="js/cub.js"></script>
+<script src="js/biblioteca.js"></script>
+<script src="js/pdfviewer.js"></script>
+<script src="js/conteudo.js"></script>
+<script src="js/cbselect.js"></script>
+<script src="js/referencias.js"></script>
+<script src="js/afiliados.js"></script>
+<script src="js/protecao.js"></script>
+<script src="js/feedback.js"></script>
+<script src="js/roadmap.js"></script>
+<script src="js/repositorio.js"></script>
+<script src="js/precos.js"></script>
+<script src="js/pagamentos.js"></script>
+<script src="js/conta.js"></script>
+<script src="js/whatsapp.js"></script>
+<script src="js/conferencia-ia.js"></script>
+<script src="js/instalar.js"></script>
+<script src="js/assistente.js"></script>
+<script src="js/app.js"></script>
+<script>
+  // Chamado por js/supa.js depois que a sessão é resolvida (Supabase ou local).
+  window.cbInit = function () {
+    var shareTok = new URLSearchParams(location.search).get("share");
+    // a41: boot SEM cache de perfil em que o SDK ainda não disse se há sessão (refresh de token lento —
+    // js/auth.js, sessaoPendente). Não é "deslogado": o splash fica (o vigia do <head> oferece "Tentar de
+    // novo" aos 8 s) e o cbInit volta quando o SDK responder, em vez de mandar ao login quem está logado.
+    var _pend = !shareTok && !AUTH.session() && AUTH.sessaoPendente && AUTH.sessaoPendente();
+    if (_pend) { _pend.then(window.cbInit); return; }
+    window._cbBootOk = true;   // o vigia de boot lento (fim deste script) para de atuar
+    var sp = document.getElementById("cb-splash"); if (sp) sp.classList.add("cb-hide");
+    // Link de leitura compartilhado (?share=token): vista somente-leitura, sem exigir login.
+    if (shareTok && typeof renderSharedToken === "function") {
+      // Visitante anônimo não navega pelos módulos: sem barra inferior (e sem a folga que ela pede).
+      var _tb = document.getElementById("mobile-tabbar"); if (_tb) _tb.remove();
+      document.body.classList.remove("tem-tabbar");
+      // 18/set/2026 (piloto só por convite): SEM sessão, o link compartilhado mostra SÓ a vista por link. Numa tela
+      // larga (> 640 px) o cabeçalho seguia com os módulos (#module-nav) e a busca, clicáveis, e qualquer ?share=
+      // (até inválido) abria Calculadoras, Normas, SINAPI… sem conta. Saem da página; e o navigate() (js/app.js)
+      // recusa sem sessão e manda ao login. Com sessão, o cabeçalho fica como sempre. Travado em
+      // tests/portas-convite.check.mjs (rodando este cbInit).
+      if (!AUTH.session()) {
+        ["module-nav", "search-results"].forEach(function (id) { var el = document.getElementById(id); if (el) el.remove(); });
+        var _busca = document.querySelector(".nav-search"); if (_busca) _busca.remove();
+        // No PILOTO, o botão do WhatsApp também sai ("sem WhatsApp" para quem não tem convite; os tópicos dele são
+        // vitrine: "Dúvidas sobre planos", "Conhecer os recursos"). Fora do piloto, fica como sempre. Revisão de
+        // 19/set/2026: o js/whatsapp.js montava o botão sozinho e esta vista seguia com ele.
+        if (window.CB_CONFIG && window.CB_CONFIG.MODO_PILOTO === true && window.ZAP && typeof window.ZAP.desligar === "function") window.ZAP.desligar();
+      }
+      renderSharedToken(shareTok); return;
+    }
+    if (!AUTH.session()) {
+      var _ret = location.search + location.hash;
+      // Erro/cancelamento do OAuth → volta ao login direto. 18/set/2026: antes de sair, guarda o MOTIVO (só um
+      // rótulo, sem dado pessoal nem a frase do servidor) para o login dizer por que não entrou — conta Google sem
+      // convite com o cadastro fechado caía no modal sem explicação (js/auth.js, guardarAvisoOAuth).
+      if (/[?&#]error=/.test(_ret)) {
+        if (typeof AUTH.guardarAvisoOAuth === "function") AUTH.guardarAvisoOAuth(_ret);
+        window.location.href = "index.html#entrar"; return;
+      }
+      // Retorno OK do OAuth (ex.: Google): a sessão chega ASSÍNCRONA (detectSessionInUrl/PKCE).
+      // Espera a troca do code por sessão antes de decidir — senão dá "bounce" de volta ao login (b7).
+      if (/[?&#](code|access_token)=/.test(_ret) && window.supa) {
+        (async function () {
+          var _sp = document.getElementById("cb-splash"); if (_sp) _sp.classList.remove("cb-hide");
+          for (var i = 0; i < 40; i++) {                          // ~6s aguardando a sessão
+            try { var g = await window.supa.auth.getSession(); if (g && g.data && g.data.session) { location.replace("app.html"); return; } } catch (e) {}
+            await new Promise(function (r) { setTimeout(r, 150); });
+          }
+          window.location.href = "index.html#entrar";             // não veio sessão
+        })();
+        return;
+      }
+      window.location.href = "index.html#entrar"; return;
+    }
+    if (window.SHARE) SHARE.vincular();   // liga convites feitos ao e-mail à conta
+    if (typeof cbConsentLGPD === "function") cbConsentLGPD();   // b7: aceite LGPD no 1º acesso (ex.: login Google)
+    if (typeof METRICS !== "undefined") METRICS.start();
+    if (typeof OBSERVAR !== "undefined") OBSERVAR.iniciar();   // captura erro de front (sem PII) desde já
+    if (typeof INSTALAR !== "undefined") INSTALAR.iniciar();   // escuta beforeinstallprompt ANTES do 1º render
+    // 1º render protegido: se UM data/*.js falhou (rede ruim), renderHome lança ReferenceError e o
+    // <main> ficaria com o esqueleto para sempre. Vira cartão de erro com saída — e o erro segue
+    // para o console/OBSERVAR (relançado fora da pilha, para não abortar o resto do boot).
+    try { if (typeof initApp === "function") { initApp(); window._cbAppMontado = true; } }
+    catch (e) {
+      var _m = document.getElementById("app");
+      if (_m) _m.innerHTML = '<div class="card" role="alert" style="max-width:520px;margin:32px auto;text-align:center">' +
+        '<h3 style="margin-bottom:6px">Não foi possível abrir o Civilbook</h3>' +
+        '<p style="margin-bottom:14px">Uma parte do app não carregou — costuma ser conexão instável. Recarregar resolve na maioria das vezes.</p>' +
+        '<button type="button" class="btn primary" onclick="location.reload()"><i class="ti ti-refresh"></i>Recarregar</button></div>';
+      setTimeout(function () { throw e; }, 0);
+    }
+    if (typeof ADS !== "undefined") ADS.iniciar();   // d10: stack de anúncios p/ free users (off por padrão)
+    if (typeof REPO !== "undefined") { REPO.registrarAceite("privacidade"); REPO.registrarAceite("termos"); }   // e19: registra aceite da versão vigente (prova jurídica; idempotente)
+    if (typeof PRECOS !== "undefined") PRECOS.carregar();   // d14: pré-carrega os preços (fonte única) p/ o checkout
+    // f50: link do WhatsApp (?esquema=<id>) → abre o Assessor IA já no desenho cotado.
+    // A mensagem do WhatsApp leva as cotas em texto (a Cloud API da Meta não aceita SVG); o traço
+    // mora aqui. Sem isto, o link cairia na home e o usuário procuraria o desenho sem achar.
+    try {
+      var eqId = new URLSearchParams(location.search).get("esquema");
+      if (eqId && typeof ASSIST !== "undefined") {
+        navigate("assessor");
+        ASSIST.abrirEsquema(eqId);
+        history.replaceState({ module: "assessor", param: null }, "", "app.html#assessor");
+      }
+    } catch (e) {}
+    // Retorno do checkout do Asaas (?checkout=success|cancel)
+    try {
+      var cp = new URLSearchParams(location.search).get("checkout");
+      if (cp && typeof toast === "function") {
+        if (cp === "success") toast("Pagamento recebido! Sua assinatura PRO será ativada em instantes.", "success");
+        else if (cp === "cancel") toast("Checkout cancelado — nenhuma cobrança foi feita.", "info");
+        history.replaceState({}, "", "app.html");
+      }
+    } catch (e) {}
+  };
+
+  // a41: chamado por js/auth.js quando o perfil revalidado em 2º plano MUDOU (plano/role/nome) — o app
+  // abre com o cache de perfil e confere com o servidor depois. Redesenha o módulo atual para o paywall
+  // sumir/aparecer sem reload, na MESMA entrada do histórico (_navPop: não empilha). Folha aberta fecha
+  // pelo caminho dela (devolve a entrada que empilhou) e o redesenho vem depois. Só com o app montado:
+  // vista por link (?share) e saída para o login não têm módulo para redesenhar.
+  window.cbPerfilMudou = function () {
+    if (!window._cbAppMontado || typeof navigate !== "function") return;
+    var redesenhar = function () {
+      var st = history.state || {};
+      _navPop = true;
+      try { navigate(st.module || currentModule, st.param || undefined); } finally { _navPop = false; }
+    };
+    if (typeof FOLHA !== "undefined" && FOLHA.aberta()) FOLHA.fechar({ semFoco: true, depois: redesenhar });
+    else redesenhar();
+  };
+
+  // b7: gate de consentimento LGPD — bloqueia o uso até o usuário aceitar a Política de Privacidade.
+  // Pega quem entrou SEM passar pelo formulário (ex.: login Google), cujo profiles.lgpd_consent_at é NULL.
+  // Overlay próprio (sem .cb-modal-ov) p/ o Escape global não fechar; saídas: Sair (logout) ou Aceitar.
+  async function cbConsentLGPD() {
+    try {
+      if (!window.supa || !AUTH.session()) return;            // modo local / sem sessão: nada a fazer
+      const uid = AUTH.session().id;
+      const { data } = await window.supa.from("profiles").select("lgpd_consent_at").eq("id", uid).maybeSingle();
+      if (!data || data.lgpd_consent_at) return;              // já consentiu (ou perfil ainda não criado)
+      if (document.getElementById("cb-lgpd-gate")) return;
+      const ov = document.createElement("div");
+      ov.id = "cb-lgpd-gate";
+      ov.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px";
+      ov.innerHTML = '<div class="card" style="max-width:480px;width:100%">' +
+        '<h3 style="margin:0 0 8px;font-size:17px">Antes de continuar</h3>' +
+        '<p class="page-sub" style="margin:0 0 12px">Para usar o Civilbook, confirme que leu e concorda com a <a href="privacidade.html" target="_blank" rel="noopener" style="color:var(--blue)">Política de Privacidade</a> e autoriza o tratamento dos seus dados conforme a LGPD.</p>' +
+        '<label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;cursor:pointer;margin-bottom:14px"><input type="checkbox" id="cb-lgpd-ck" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;accent-color:var(--blue)"><span>Li e concordo com a Política de Privacidade (LGPD).</span></label>' +
+        '<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="cb-lgpd-sair">Sair</button><button class="btn primary" id="cb-lgpd-ok" disabled>Aceitar e continuar</button></div>' +
+        '</div>';
+      document.body.appendChild(ov);
+      const ck = ov.querySelector("#cb-lgpd-ck"), ok = ov.querySelector("#cb-lgpd-ok");
+      ck.onchange = function () { ok.disabled = !ck.checked; };
+      ov.querySelector("#cb-lgpd-sair").onclick = function () { AUTH.logout(); };
+      ok.onclick = async function () {
+        ok.disabled = true;
+        try {
+          const { error } = await window.supa.from("profiles").update({ lgpd_consent_at: new Date().toISOString() }).eq("id", uid);
+          if (error) throw error;
+          ov.remove();
+          if (typeof toast === "function") toast("Consentimento registrado. Obrigado!", "success");
+        } catch (e) { ok.disabled = false; if (typeof toast === "function") toast("Erro ao registrar: " + (e.message || e), "error"); }
+      };
+    } catch (e) { /* erro na checagem não deve travar o app */ }
+  }
+  // (O vigia de boot lento mora no <head>: precisa contar desde o começo da carga, não daqui.)
+</script>
+<script>
+  // PWA: registra o service worker (instalável e funciona offline após o 1º acesso).
+  // updateViaCache:"none" — a checagem de versão do sw.js NÃO passa pelo cache HTTP do navegador (que
+  // segurava o arquivo por horas): correção urgente do próprio SW chega na próxima checagem.
+  // reg.update() ao voltar ao primeiro plano — PWA instalado quase nunca "navega" (que é quando o
+  // navegador checa sozinho); fica dias aberto em segundo plano. No máximo 1 checagem a cada 10 min.
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then(reg => {
+        let ultima = Date.now();
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState !== "visible" || Date.now() - ultima < 600000) return;
+          ultima = Date.now();
+          reg.update().catch(() => {});
+        });
+      }).catch(() => {});
+    });
+  }
+</script>
+<!-- SDK Supabase vendorizado (local-first); supa.js usa window.supabase e só cai p/ esm.sh se faltar -->
+<script src="js/vendor/supabase.js"></script>
+<script type="module" src="js/supa.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<!-- CSP (achado F2-03): esta página trata o ?code do OAuth do Drive — a superfície mais sensível a
+     ficar sem CSP. Só precisa de si mesma + Supabase (a Edge Function drive-sync mora em
+     *.supabase.co). Sem terceiros, sem fontes externas. 'unsafe-inline' fica só pelo script inline
+     de callback (a página é nossa e não recebe entrada de conteúdo). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>Conectando Google Drive… — Civilbook</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body style="display:flex;align-items:center;justify-content:center;min-height:100vh">
+  <div class="card" style="max-width:420px;text-align:center;padding:28px">
+    <h2 id="t" style="font-size:18px;margin:0 0 8px">Conectando o Google Drive…</h2>
+    <p id="m" class="page-sub" style="margin:0">Aguarde…</p>
+  </div>
+<!-- f36: callback isolado do OAuth do Drive. Cria o client com detectSessionInUrl:false p/ o SDK NÃO
+     confundir o ?code do Google com o login Supabase; só lê o JWT da sessão e troca o code no servidor. -->
+<script src="js/config.js"></script>
+<script src="js/vendor/supabase.js"></script>
+<script>
+(async function () {
+  var t = document.getElementById("t"), m = document.getElementById("m");
+  function fim(msg, ok) {
+    t.textContent = ok ? "Google Drive conectado!" : "Não foi possível conectar";
+    m.textContent = msg || "";
+    setTimeout(function () { location.replace("app.html"); }, ok ? 1400 : 4500);
+  }
+  try {
+    var qs = new URLSearchParams(location.search);
+    if (qs.get("error")) return fim("Autorização negada ou cancelada.", false);
+    var code = qs.get("code");
+    if (!code) return fim("Sem código de autorização.", false);
+    var state = qs.get("state") || "";   // F2-04: devolvido ao servidor p/ conferência anti-CSRF
+    var cfg = window.CB_CONFIG || {};
+    if (!window.supabase || !cfg.SUPABASE_URL) return fim("Configuração indisponível.", false);
+    var supa = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY, {
+      auth: { persistSession: true, autoRefreshToken: false, detectSessionInUrl: false }
+    });
+    var sess = (await supa.auth.getSession()).data.session;
+    var tok = sess && sess.access_token;
+    if (!tok) return fim("Faça login no Civilbook antes de conectar o Drive.", false);
+    var redirectUri = new URL("drive-callback.html", location.href).href.split("?")[0];
+    var r = await fetch(cfg.FUNCTIONS_URL + "/drive-sync", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + tok },
+      body: JSON.stringify({ action: "oauth_exchange", code: code, redirect_uri: redirectUri, state: state })
+    });
+    var j = await r.json().catch(function () { return {}; });
+    if (!r.ok) return fim(j.error || ("HTTP " + r.status), false);
+    fim(j.email ? ("Conta: " + j.email) : "", true);
+  } catch (e) { fim(String(e && e.message || e), false); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+# Civilbook — robots.txt (d13: anti-scraping; ver docs/PROTECAO-CONTEUDO.md)
+# A landing publica e indexavel (SEO). O app, o admin e os fontes ficam fora dos buscadores.
+# robots.txt so vale p/ crawlers que RESPEITAM o padrao — nao impede um scraper determinado.
+# O navegador/app ignora robots.txt: bloquear /js/ e /data/ aqui NAO quebra o app (so afeta bots).
+
+User-agent: *
+Disallow: /app.html
+Disallow: /admin.html
+Disallow: /viabilidade.html
+Disallow: /js/
+Disallow: /data/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /supabase/
+Disallow: /_trap/          # honeypot: bot que ignora isto e acessa se denuncia (logar no WAF)
+
+# Crawlers de IA (treinamento/coleta) — bloquear os que respeitam robots.txt.
+User-agent: GPTBot
+Disallow: /
+User-agent: ChatGPT-User
+Disallow: /
+User-agent: OAI-SearchBot
+Disallow: /
+User-agent: ClaudeBot
+Disallow: /
+User-agent: anthropic-ai
+Disallow: /
+User-agent: Claude-Web
+Disallow: /
+User-agent: Google-Extended
+Disallow: /
+User-agent: CCBot
+Disallow: /
+User-agent: PerplexityBot
+Disallow: /
+User-agent: Bytespider
+Disallow: /
+User-agent: Amazonbot
+Disallow: /
+User-agent: Applebot-Extended
+Disallow: /
+User-agent: Meta-ExternalAgent
+Disallow: /
+User-agent: FacebookBot
+Disallow: /
+User-agent: cohere-ai
+Disallow: /
+User-agent: Diffbot
+Disallow: /
+User-agent: Omgilibot
+Disallow: /
+User-agent: ImagesiftBot
+Disallow: /
+
+# Mapa do site (17/set/2026): e assim que o Google acha as paginas publicas sem ninguem submeter nada.
+# A linha vale para o arquivo INTEIRO (nao pertence a nenhum grupo User-agent acima) e o endereco tem de ser
+# absoluto — e o unico jeito previsto pelo padrao. O sitemap.xml e gerado do git; ver tests/seo.check.mjs.
+# Modo piloto (docs/MODO-PILOTO.md): sem a linha Sitemap. O site sai dos buscadores pelo noindex de cada pagina; o rastreio segue liberado para o robo LER esse noindex (Disallow nao tira do indice).

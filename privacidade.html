@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<!-- Civilbook — © 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.). Código proprietário, todos os direitos reservados. Uso/cópia/redistribuição não autorizados são vedados. Ver LICENSE. -->
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'">
+<title>Política de Privacidade — Civilbook</title>
+<meta name="description" content="Como o Civilbook coleta, usa, compartilha e protege os dados pessoais de quem usa a plataforma, conforme a LGPD (Lei 13.709/2018) — inclusive os dados recebidos do login com Google e do Google Drive.">
+
+<!-- SEO (17/set/2026) — canônico próprio + cartão social. Esta página não tinha description: sem ela o Google
+     inventa o resumo a partir do primeiro parágrafo que achar, e numa política jurídica isso costuma sair
+     péssimo. Absoluto no ápice por causa de www (301 para o ápice), ?utm_ (d13) e #âncora. Travado em
+     tests/seo.check.mjs (título e description únicos entre as 4 páginas públicas). -->
+<link rel="canonical" href="https://civilbook.com.br/privacidade.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Civilbook">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Política de Privacidade — Civilbook">
+<meta property="og:description" content="Como o Civilbook coleta, usa, compartilha e protege os dados pessoais de quem usa a plataforma, conforme a LGPD (Lei 13.709/2018) — inclusive os dados recebidos do login com Google e do Google Drive.">
+<meta property="og:url" content="https://civilbook.com.br/privacidade.html">
+<meta property="og:image" content="https://civilbook.com.br/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="Logotipo do Civilbook">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Política de Privacidade — Civilbook">
+<meta name="twitter:description" content="Como o Civilbook coleta, usa, compartilha e protege os dados pessoais de quem usa a plataforma, conforme a LGPD (Lei 13.709/2018) — inclusive os dados recebidos do login com Google e do Google Drive.">
+<meta name="twitter:image" content="https://civilbook.com.br/icon-512.png">
+
+<meta name="author" content="CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.)">
+<meta name="copyright" content="© 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.) — Civilbook. Todos os direitos reservados.">
+<script>(function(){try{var t=localStorage.getItem('cb-theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/theme.js"></script>
+<script src="js/a11y-icons.js"></script>
+</head>
+<body>
+
+<header class="nav">
+  <a class="logo" href="index.html" style="text-decoration:none;color:inherit">
+    <img class="logo-icon" src="icon.svg" alt="">
+    <span>Civilbook</span>
+  </a>
+  <nav class="land-links">
+    <!-- Modo piloto (docs/MODO-PILOTO.md): estes três saem na publicação com a chave ligada — levam a seções que o
+         piloto não publica. tests/modo-piloto.check.mjs trava os marcadores. -->
+    <a href="privacidade.html" aria-current="page" style="color:var(--blue);font-weight:600">Privacidade</a>
+    <a href="termos.html">Termos</a>
+  </nav>
+  <div class="nav-right" style="display:flex;gap:10px">
+    <button class="btn icon-only" data-theme-toggle onclick="THEME.toggle()" aria-label="Alternar tema"><i class="ti ti-moon-stars"></i></button>
+    <a class="btn primary" href="app.html"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Abrir o app</a>
+  </div>
+</header>
+
+<main style="max-width:760px;margin:0 auto;padding:32px 24px 60px">
+  <h1 class="page-title">Política de Privacidade</h1>
+  <p class="page-sub">Como o Civilbook coleta, usa e protege os seus dados pessoais, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 — LGPD) e o Marco Civil da Internet (Lei nº 12.965/2014).</p>
+
+  <!-- e19: se houver versão VIGENTE da Política no repositório, ela substitui este conteúdo (fonte única).
+       ATENÇÃO (verificação OAuth do Google, set/2026): a versão do repositório TROCA este bloco inteiro pelo texto do
+       banco (REPO.corpoHTML escapa HTML — o e-mail sai como texto puro, sem email_off). Só publicar pelo repositório uma
+       versão que já traga a seção 3.1 (dados recebidos do Google), senão o site volta à Política sem ela. -->
+  <div id="repo-conteudo">
+  <p style="font-size:13px;color:var(--text-3);margin:-4px 0 16px"><i class="ti ti-calendar" aria-hidden="true"></i> Última atualização: 16 de setembro de 2026 · Versão 1.2</p>
+
+  <div class="card" style="margin-bottom:14px">
+    <p style="font-size:13px;color:var(--text-2);margin:0"><i class="ti ti-info-circle" aria-hidden="true"></i> Esta Política (v1.2) foi elaborada internamente. Antes do uso comercial em larga escala, recomenda-se a revisão por assessoria jurídica especializada em proteção de dados.</p>
+  </div>
+
+  <p>O Civilbook (<strong>civilbook.com.br</strong>) é uma plataforma de referência técnica para a construção civil. Levamos a sua privacidade a sério e tratamos seus dados pessoais apenas na medida necessária para oferecer e melhorar o serviço, sempre com transparência. Esta Política explica <strong>quais</strong> dados coletamos, <strong>como</strong> e <strong>por quê</strong>, com quem compartilhamos e quais são os <strong>seus direitos</strong>.</p>
+
+  <h3 style="margin:22px 0 6px">1. Quem é o controlador dos dados</h3>
+  <p>O controlador dos seus dados pessoais é a <strong>CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.)</strong>, inscrita no CNPJ sob o nº <strong>67.581.707/0001-00</strong>, com sede na Rua Quintino Bocaiúva, 298, ap. 804 — Zona 07, Maringá/PR, CEP 87020-160, responsável por decidir como e para que seus dados são tratados.</p>
+  <p>Encarregado pelo Tratamento de Dados Pessoais (DPO), conforme o art. 41 da LGPD, e canal de contato para assuntos de privacidade: <strong><!--email_off-->eng.rcpizo@gmail.com<!--/email_off--></strong>.</p>
+
+  <h3 style="margin:22px 0 6px">2. Quais dados coletamos</h3>
+  <ul style="padding-left:20px;line-height:1.8">
+    <li><strong>Dados de cadastro:</strong> nome e e-mail (obrigatórios para criar a conta) e, opcionalmente, empresa, registro profissional (CREA, CAU, CFT ou outro) e telefone.</li>
+    <li><strong>Dados de uso da plataforma:</strong> módulos e páginas acessados, ações realizadas, buscas feitas, itens favoritados, data/hora e duração das sessões — para entender o uso e melhorar o produto.</li>
+    <li><strong>Conteúdo que você cria:</strong> projetos em conferência, checklists, ordens de serviço, laudos, fornecedores/garantias e solicitações de orçamento.</li>
+    <li><strong>Dados de cobrança (planos pagos):</strong> nome, CPF ou CNPJ e e-mail de cobrança, necessários para emitir a cobrança. <strong>Não armazenamos dados de cartão de crédito</strong> — eles são tratados diretamente pelo provedor de pagamento (ver item 6).</li>
+    <li><strong>Dados de atendimento:</strong> mensagens de suporte, feedback e o conteúdo de conversas que você iniciar conosco (inclusive por WhatsApp).</li>
+    <li><strong>Dados técnicos:</strong> tipo de navegador e dispositivo (user agent), endereço IP e identificadores de cookies (ver item 7).</li>
+    <li><strong>Dados recebidos do Google:</strong> se você entrar com a sua conta Google ou conectar o Google Drive, recebemos apenas os dados descritos na seção 3.1.</li>
+  </ul>
+  <p>Não coletamos <strong>dados pessoais sensíveis</strong> (origem racial, saúde, biometria, opinião política etc.). Pedimos que você também não inclua dados sensíveis em campos livres (como observações de laudos).</p>
+
+  <h3 style="margin:22px 0 6px">3. Como coletamos</h3>
+  <ul style="padding-left:20px;line-height:1.8">
+    <li><strong>Você nos fornece:</strong> ao se cadastrar, preencher seu perfil, criar conteúdo, contratar um plano ou nos contatar.</li>
+    <li><strong>Automaticamente:</strong> ao usar a plataforma, registramos dados de uso e técnicos (inclusive por cookies, com o seu consentimento quando aplicável).</li>
+    <li><strong>De terceiros:</strong> do provedor de pagamento (status da assinatura/cobrança) e de ferramentas de análise/marketing que você autorizar.</li>
+  </ul>
+
+  <h3 style="margin:22px 0 6px">3.1 Login com Google e Google Drive (dados recebidos do Google)</h3>
+  <p>O Civilbook oferece o botão <strong>“Entrar com Google”</strong> e, separadamente, uma integração <strong>opcional</strong> com o Google Drive. Esta seção descreve exatamente quais informações recebemos do Google, para que as usamos, com quem as compartilhamos, como as protegemos e por quanto tempo as guardamos.</p>
+  <ul style="padding-left:20px;line-height:1.8">
+    <li><strong>O que recebemos ao usar “Entrar com Google”:</strong> o seu nome, o seu e-mail, a foto do perfil e o identificador da sua conta Google — apenas os escopos básicos de login (<em>openid</em>, <em>e-mail</em> e <em>perfil</em>). <strong>Não acessamos</strong> o Gmail, os contatos, a agenda ou qualquer outro serviço da sua conta Google.</li>
+    <li><strong>Google Drive (opcional):</strong> só acontece se você conectar o Drive em <strong>“Minha conta” → “Google Drive”</strong>. Usamos o escopo <em>drive.file</em>, que alcança <strong>apenas os arquivos que o Civilbook cria ou que você abre por ele</strong> — nunca o restante do seu Drive. Os tokens de acesso ficam <strong>somente nos nossos servidores</strong> (com criptografia em repouso na infraestrutura do provedor de nuvem — ver seção 11) e <strong>nunca no seu navegador</strong>. Ao desconectar, apagamos os tokens e pedimos ao Google a revogação do acesso; você também pode revogar o acesso a qualquer momento em <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">myaccount.google.com/permissions</a>.</li>
+    <li><strong>Como usamos:</strong> para criar e identificar a sua conta, exibir o seu nome no perfil (a foto do perfil chega junto com o login, mas hoje <strong>não é exibida nem usada</strong>) e, no caso do Drive, enviar e organizar os arquivos que você pedir. Nada além disso.</li>
+    <li><strong>Compartilhamento:</strong> <strong>não transferimos nem divulgamos</strong> dados recebidos do Google a terceiros para fins diferentes dos descritos aqui. Os operadores de infraestrutura listados na seção 8 (ex.: Supabase) só os processam por nossa conta e sob as nossas instruções.</li>
+    <li><strong>Proteção:</strong> criptografia em trânsito (TLS/HTTPS), criptografia em repouso na infraestrutura do provedor de nuvem, acesso restrito por usuário e tokens guardados só no servidor — em linha com a seção 11.</li>
+    <li><strong>Retenção e exclusão:</strong> mantemos esses dados enquanto a sua conta existir. A exclusão da conta — pedida em <strong>“Minha conta”</strong> ou pelo contato da seção 15 — elimina de uma vez todos esses dados, inclusive os tokens do Drive; processamos o pedido no menor prazo possível, observados os prazos legais (seção 12). Os tokens do Drive também são apagados <strong>imediatamente</strong> ao desconectar.</li>
+    <li><strong>Usos proibidos:</strong> <strong>não</strong> usamos dados recebidos do Google para publicidade direcionada, <strong>não</strong> os vendemos a corretores de dados, <strong>não</strong> os usamos para treinar modelos de inteligência artificial não personalizados nem para análise de crédito.</li>
+  </ul>
+  <p>O uso, pelo Civilbook, das informações recebidas das APIs do Google — e a transferência delas a qualquer outro aplicativo — obedece à <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer">Google API Services User Data Policy</a>, inclusive os requisitos de Uso Limitado (<em>Limited Use</em>).</p>
+
+  <h3 style="margin:22px 0 6px">4. Para que usamos os seus dados</h3>
+  <ul style="padding-left:20px;line-height:1.8">
+    <li>Criar e autenticar a sua conta e manter o seu acesso seguro.</li>
+    <li>Operar as funcionalidades e guardar o conteúdo que você cria.</li>
+    <li>Processar contratações, cobranças e a gestão da sua assinatura.</li>
+    <li>Prestar suporte e responder às suas solicitações.</li>
+    <li>Medir padrões e tempo de uso para melhorar a plataforma (métricas de produto).</li>
+    <li>Enviar comunicações sobre o serviço e, se você autorizar, novidades e ofertas.</li>
+    <li>Cumprir obrigações legais e regulatórias e prevenir fraudes e abusos.</li>
+  </ul>
+
+  <h3 style="margin:22px 0 6px">5. Com que base legal tratamos (LGPD)</h3>
+  <p>Tratamos seus dados com fundamento em uma ou mais das seguintes hipóteses do art. 7º da LGPD:</p>
+  <ul style="padding-left:20px;line-height:1.8">
+    <li><strong>Execução de contrato</strong> (art. 7º, V) — para operar a conta, as funcionalidades e as assinaturas que você contrata.</li>
+    <li><strong>Consentimento</strong> (art. 7º, I) — para cookies não essenciais, comunicações de marketing e outros usos que dependam da sua autorização (que pode ser revogada a qualquer momento).</li>
+    <li><strong>Legítimo interesse</strong> (art. 7º, IX) — para melhorar o produto, garantir segurança e prevenir fraudes, sempre respeitando os seus direitos e expectativas.</li>
+    <li><strong>Cumprimento de obrigação legal/regulatória</strong> (art. 7º, II) — quando a lei exigir a guarda ou a apresentação de dados.</li>
+  </ul>
+
+  <h3 style="margin:22px 0 6px">6. Pagamentos</h3>
+  <p>Os planos pagos são processados por um <strong>provedor de pagamento (PSP)</strong> especializado. Os dados financeiros (como número de cartão) são informados <strong>diretamente ao provedor</strong>, em ambiente próprio dele, e <strong>não transitam nem ficam armazenados nos servidores do Civilbook</strong>. Recebemos do provedor apenas o necessário para gerir a sua assinatura (por exemplo, status do pagamento). O tratamento desses dados pelo provedor segue a política de privacidade dele.</p>
+
+  <h3 style="margin:22px 0 6px">7. Cookies e tecnologias semelhantes</h3>
+  <p>Usamos cookies e armazenamento local para três finalidades:</p>
+  <ul style="padding-left:20px;line-height:1.8">
+    <li><strong>Essenciais</strong> — indispensáveis ao funcionamento (login, sessão, preferências). Sempre ativos.</li>
+    <li><strong>De análise</strong> — para entender o uso e melhorar a plataforma. Só com o seu aceite.</li>
+    <li><strong>De marketing</strong> — para medir campanhas e mostrar conteúdo relevante. Só com o seu aceite.</li>
+  </ul>
+  <p>No primeiro acesso você escolhe aceitar ou recusar os cookies não essenciais, sem prejuízo de uso. Você pode rever a sua escolha a qualquer momento em <strong>“Gerenciar cookies”</strong>, no rodapé do site.</p>
+
+  <h3 style="margin:22px 0 6px">8. Com quem compartilhamos</h3>
+  <p>Não vendemos seus dados pessoais. Compartilhamos apenas o necessário, com <strong>operadores</strong> que tratam dados em nosso nome e seguindo as nossas instruções:</p>
+  <ul style="padding-left:20px;line-height:1.8">
+    <li><strong>Supabase</strong> — banco de dados, autenticação e infraestrutura em nuvem.</li>
+    <li><strong>Provedor de pagamento (PSP)</strong> — processamento de cobranças e assinaturas.</li>
+    <li><strong>Ferramentas de análise e marketing</strong> (ex.: Google, Meta, TikTok) — somente se você aceitar os cookies correspondentes.</li>
+    <li><strong>Provedores de comunicação</strong> (e-mail e WhatsApp) — para enviar avisos do serviço e prestar atendimento.</li>
+    <li><strong>Provedores de inteligência artificial</strong> — <strong>Anthropic PBC</strong> (modelos Claude) e <strong>Voyage AI</strong>, nos Estados Unidos, que processam o conteúdo que você envia ao assessor de IA (ver seção 8.1).</li>
+  </ul>
+  <p>Também podemos compartilhar dados para cumprir obrigação legal, atender a ordem de autoridade competente ou exercer direitos em processos.</p>
+
+  <h3 style="margin:22px 0 6px">8.1 Inteligência artificial (assessor)</h3>
+  <p>Quando você usa o assessor de IA — no aplicativo ou pelo WhatsApp —, o <strong>conteúdo da sua interação</strong> é enviado a provedores de IA para gerar a resposta. Isso inclui o <strong>texto das suas perguntas</strong>, as <strong>fotos de obra</strong> que você anexa, <strong>trechos de documentos e projetos</strong> que você carrega e <strong>transcrições de áudio</strong> que você envia. <strong>Não</strong> enviamos a esses provedores a sua senha nem os seus dados de pagamento.</p>
+  <ul style="padding-left:20px;line-height:1.8">
+    <li><strong>Anthropic PBC</strong> (Claude) — gera as respostas de texto e a análise de imagens.</li>
+    <li><strong>Voyage AI</strong> — transforma textos em vetores para a busca na base técnica.</li>
+  </ul>
+  <p>Conforme os termos comerciais dessas APIs, o conteúdo enviado <strong>não é usado para treinar</strong> os modelos. Como esses provedores estão nos EUA, aplica-se a transferência internacional descrita na seção 9. Se você anexar documentos com dados pessoais de terceiros, é sua responsabilidade ter base legal para isso.</p>
+
+  <h3 style="margin:22px 0 6px">9. Transferência internacional</h3>
+  <p>Os dados principais da sua conta (perfil, projetos, cobranças) são hospedados em servidores localizados no <strong>Brasil</strong> (região São Paulo). Parte do tratamento, porém, ocorre <strong>fora do Brasil</strong>: os provedores de inteligência artificial (Anthropic e Voyage AI, seção 8.1) processam o conteúdo das suas interações com o assessor nos <strong>Estados Unidos</strong>, e alguns operadores de análise, marketing ou comunicação também podem tratar dados em outros países. Nessas situações, adotamos salvaguardas adequadas — cláusulas contratuais e acordos de tratamento de dados com os operadores —, nos termos dos <strong>arts. 33 a 36 da LGPD</strong>.</p>
+
+  <h3 style="margin:22px 0 6px">10. Por quanto tempo guardamos</h3>
+  <p>Mantemos os seus dados enquanto a sua conta existir e pelo tempo necessário às finalidades desta Política. Além disso, aplicamos prazos específicos por categoria:</p>
+  <ul style="padding-left:20px;line-height:1.8">
+    <li><strong>Conversas com o assessor no WhatsApp</strong> — a memória curta da conversa (texto das últimas trocas) é apagada após <strong>30 dias</strong> sem atividade, ou imediatamente quando você envia o comando <em>“nova”</em>.</li>
+    <li><strong>Esquemas/desenhos gerados</strong> — mantidos por <strong>90 dias</strong>.</li>
+    <li><strong>Registros de uso</strong> (para estatística) — mantidos de forma <strong>agregada/anonimizada</strong>, sem identificá-lo.</li>
+    <li><strong>Leads do formulário de contato</strong> — expurgados quando não há relacionamento ativo.</li>
+    <li><strong>Dados recebidos do Google e tokens do Google Drive</strong> — mantidos enquanto a conta existir e eliminados junto com ela quando a exclusão é processada (pedido em “Minha conta” ou pelo contato da seção 15; prazo conforme a seção 12). Os tokens do Drive são apagados <strong>imediatamente</strong> ao desconectar (ver seção 3.1).</li>
+  </ul>
+  <p>Após o encerramento da conta, os dados são <strong>eliminados</strong> (inclusive os arquivos armazenados), podendo certos registros ser retidos apenas pelo prazo exigido por obrigação legal (por exemplo, fiscal) ou para o exercício de direitos.</p>
+
+  <h3 style="margin:22px 0 6px">11. Como protegemos</h3>
+  <p>Adotamos medidas técnicas e organizacionais para proteger seus dados: controle de acesso por usuário (cada conta acessa apenas os próprios dados, via regras de segurança a nível de linha), criptografia em trânsito (HTTPS) e em repouso (na infraestrutura do provedor de nuvem), gestão cuidadosa de segredos e princípio do menor privilégio. Nenhum sistema é 100% imune; em caso de incidente de segurança relevante, comunicaremos os titulares e a ANPD conforme exigido pela lei.</p>
+
+  <h3 style="margin:22px 0 6px">12. Seus direitos como titular</h3>
+  <p>Nos termos do art. 18 da LGPD, você pode, a qualquer momento, solicitar:</p>
+  <ul style="padding-left:20px;line-height:1.8">
+    <li>confirmação da existência de tratamento e <strong>acesso</strong> aos seus dados;</li>
+    <li><strong>correção</strong> de dados incompletos, inexatos ou desatualizados;</li>
+    <li><strong>anonimização, bloqueio ou eliminação</strong> de dados desnecessários ou tratados em desconformidade;</li>
+    <li><strong>portabilidade</strong> dos dados a outro fornecedor;</li>
+    <li><strong>eliminação</strong> dos dados tratados com base no consentimento;</li>
+    <li>informação sobre o <strong>compartilhamento</strong> dos seus dados;</li>
+    <li><strong>revogação do consentimento</strong> e oposição a tratamentos.</li>
+  </ul>
+  <p>Para exercer seus direitos, escreva para <strong><!--email_off-->eng.rcpizo@gmail.com<!--/email_off--></strong>. Dentro do app, você também pode editar seu perfil em <strong>“Minha conta”</strong> e solicitar a exclusão da conta e dos dados. Responderemos no menor prazo possível, observados os prazos legais.</p>
+
+  <h3 style="margin:22px 0 6px">13. Crianças e adolescentes</h3>
+  <p>O Civilbook é uma ferramenta profissional, destinada a maiores de 18 anos. Não coletamos intencionalmente dados de crianças e adolescentes. Caso identifiquemos esse tipo de coleta sem o devido amparo legal, eliminaremos os dados.</p>
+
+  <h3 style="margin:22px 0 6px">14. Alterações nesta Política</h3>
+  <p>Podemos atualizar esta Política para refletir mudanças no serviço ou na legislação. A versão vigente é sempre a publicada nesta página, com a data de atualização indicada no topo. Mudanças relevantes serão comunicadas pelos canais adequados.</p>
+  <p style="font-size:13px;color:var(--text-3)">Histórico: v1.2 (16/set/2026): seção 3.1 — dados recebidos do Google (login e Drive), retenção e usos proibidos. v1.1 (7/ago/2026): assessor por IA e transferência internacional.</p>
+
+  <h3 style="margin:22px 0 6px">15. Encarregado, contato e ANPD</h3>
+  <p>Dúvidas, pedidos ou reclamações sobre privacidade: <strong><!--email_off-->eng.rcpizo@gmail.com<!--/email_off--></strong>. Você também pode dirigir reclamações à <strong>Autoridade Nacional de Proteção de Dados (ANPD)</strong> — <span style="color:var(--text-3)">gov.br/anpd</span>.</p>
+
+  </div><!-- /#repo-conteudo -->
+
+  <p style="margin-top:28px;display:flex;gap:10px;flex-wrap:wrap"><a href="termos.html" class="btn"><i class="ti ti-file-text" aria-hidden="true"></i> Termos de Uso</a><a href="index.html" class="btn"><i class="ti ti-arrow-left" aria-hidden="true"></i> Voltar ao início</a></p>
+</main>
+
+<footer class="footer" style="text-align:center">
+  <p><strong>Civilbook</strong> — civilbook.com.br</p>
+  <p style="margin-top:8px;font-size:12px;color:var(--text-3)">© 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.) · Civilbook. Todos os direitos reservados.</p>
+</footer>
+
+<!-- e19: renderiza a versão VIGENTE da Política (repositório) como fonte única; fallback = texto acima. -->
+<script src="js/config.js"></script>
+<script src="js/vendor/supabase.js"></script>
+<script src="js/repositorio.js"></script>
+<script>
+  (function () {
+    try {
+      var C = window.CB_CONFIG || {};
+      if (window.supabase && C.SUPABASE_URL && C.SUPABASE_ANON_KEY) {
+        window.supa = window.supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY);
+        if (window.REPO) REPO.renderPublico("privacidade", "repo-conteudo");
+      }
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>

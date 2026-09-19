@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<!-- Civilbook — © 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.). Código proprietário, todos os direitos reservados. Uso/cópia/redistribuição não autorizados são vedados. Ver LICENSE. -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh https://cdn.jsdelivr.net; worker-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.sh; object-src 'none'; base-uri 'self'">
+<title>Admin — Civilbook</title>
+<meta name="author" content="CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.)">
+<meta name="copyright" content="© 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.) — Civilbook. Todos os direitos reservados.">
+<meta name="robots" content="noindex, nofollow, noai, noimageai">
+<script>(function(){try{var t=localStorage.getItem('cb-theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/config.js"></script>
+<script src="js/copyright.js"></script>
+<script src="js/a11y-icons.js"></script>
+<style>
+  .adm-tabs { display:none; max-width:1080px; margin:0 auto; padding:20px 24px 0; gap:0; }
+  .adm-tab { padding:8px 18px; background:var(--bg); color:var(--text-2); border:1.5px solid var(--border); border-bottom:none; border-radius:8px 8px 0 0; cursor:pointer; font-size:13px; font-weight:500; transition:background .15s,color .15s; }
+  .adm-tab.active { background:var(--surface,#fff); color:var(--blue); border-color:var(--blue); position:relative; z-index:1; }
+  [data-theme="dark"] .adm-tab.active { background:var(--bg-2,#1e1e1e); }
+  .adm-tab:hover:not(.active) { background:var(--bg-2,#eee); }
+  .adm-body { max-width:1080px; margin:0 auto; padding:0 24px 60px; border-top:1.5px solid var(--border); padding-top:24px; }
+  .adm-body--embed { max-width:none; padding:0 !important; border-top:none !important; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="logo">
+    <div class="logo-icon"><i class="ti ti-building-arch"></i></div>
+    <span>Civilbook · Admin</span>
+  </div>
+  <div class="nav-right" style="display:flex;gap:10px">
+    <a class="btn" href="viabilidade.html"><i class="ti ti-chart-area"></i>Viabilidade</a>
+    <a class="btn" href="app.html"><i class="ti ti-layout-dashboard"></i>App</a>
+    <button class="btn" onclick="AUTH.logout()"><i class="ti ti-logout"></i>Sair</button>
+  </div>
+</header>
+
+<div id="admin-nav" class="adm-tabs">
+  <button class="adm-tab active" data-view="metricas" onclick="showAdminView('metricas')"><i class="ti ti-chart-bar"></i> Métricas</button>
+  <button class="adm-tab" data-view="marketing" onclick="showAdminView('marketing')"><i class="ti ti-speakerphone"></i> Marketing</button>
+  <button class="adm-tab" data-view="feedback" onclick="showAdminView('feedback')"><i class="ti ti-message-2-heart"></i> Feedback</button>
+  <button class="adm-tab" data-view="suporte" onclick="showAdminView('suporte')"><i class="ti ti-lifebuoy"></i> Suporte</button>
+  <button class="adm-tab" data-view="financeiro" onclick="showAdminView('financeiro')"><i class="ti ti-cash"></i> Financeiro</button>
+  <button class="adm-tab" data-view="repositorio" onclick="showAdminView('repositorio')"><i class="ti ti-file-certificate"></i> Repositório</button>
+  <button class="adm-tab" data-view="integracoes" onclick="showAdminView('integracoes')"><i class="ti ti-plug-connected"></i> Integrações</button>
+  <button class="adm-tab" data-view="baseia" onclick="showAdminView('baseia')"><i class="ti ti-database-import"></i> Base IA</button>
+  <button class="adm-tab" data-view="saude" onclick="showAdminView('saude')"><i class="ti ti-heartbeat"></i> Saúde</button>
+  <button class="adm-tab" data-view="seguranca" onclick="showAdminView('seguranca')"><i class="ti ti-shield-lock"></i> Segurança</button>
+  <button class="adm-tab" data-view="plano" onclick="showAdminView('plano')"><i class="ti ti-list-check"></i> Plano</button>
+  <button class="adm-tab" data-view="viabilidade" onclick="showAdminView('viabilidade')"><i class="ti ti-calculator"></i> Viabilidade</button>
+</div>
+
+<div id="admin" class="adm-body"></div>
+
+<script src="js/auth.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/cbselect.js"></script>
+<script src="js/feedback.js"></script>
+<script src="js/roadmap.js"></script>
+<script src="js/financeiro.js"></script>
+<script src="js/risco.core.js"></script>
+<script src="js/risco.js"></script>
+<script src="js/previsao.js"></script>
+<script src="js/repositorio.js"></script>
+<script src="js/precos.js"></script>
+<script src="js/conta.js"></script>
+<script src="js/escala.js"></script>
+<script src="js/saude.js"></script>
+<script src="js/insights.js"></script>
+<script src="js/admin.js"></script>
+<script>
+  // Gate: exige backend + sessão + role=admin.
+  window.cbInit = function () {
+    const el = document.getElementById("admin");
+    if (!(window.CB_CONFIG && window.CB_CONFIG.SUPA_READY)) {
+      el.innerHTML = `<div class="card"><p>O painel admin exige o backend (Supabase) configurado.</p></div>`;
+      return;
+    }
+    // a41 (17/set/2026): com o boot otimista pode haver sessão PENDENTE (sem cache de perfil + SDK lento).
+    // Não é "deslogado": espera o SDK responder em vez de mandar ao login quem está logado.
+    var _pend = !AUTH.session() && AUTH.sessaoPendente && AUTH.sessaoPendente();
+    if (_pend) { _pend.then(window.cbInit); return; }
+    if (!AUTH.session()) { window.location.href = "index.html#entrar"; return; }
+    if (!AUTH.isAdmin()) {
+      el.innerHTML = `<div class="card" style="max-width:520px;margin:40px auto;text-align:center;padding:36px">
+        <div class="card-icon" style="background:var(--red-light);color:var(--red);margin:0 auto 14px"><i class="ti ti-lock"></i></div>
+        <h2 style="font-size:19px;font-weight:600;margin-bottom:6px">Acesso restrito</h2>
+        <p style="color:var(--text-2)">Esta área é só para administradores. Sua conta é <strong>${AUTH.session().email}</strong> (role: ${AUTH.session().role}).</p>
+        <p style="margin-top:14px"><a class="btn" href="app.html"><i class="ti ti-arrow-left"></i>Voltar ao app</a></p>
+      </div>`;
+      return;
+    }
+    document.getElementById("admin-nav").style.display = "flex";
+    renderAdmin();
+  };
+  // a41: se a revalidação do perfil mudar o role (ex.: 1º acesso no aparelho, perfil chegou depois), redesenha.
+  // O painel continua protegido no servidor (RLS/RPC); isto é só a tela acompanhando o perfil confirmado.
+  window.cbPerfilMudou = function () { if (typeof window.cbInit === "function") window.cbInit(); };
+</script>
+<!-- SDK Supabase vendorizado (local-first); supa.js usa window.supabase e só cai p/ esm.sh se faltar -->
+<script src="js/vendor/supabase.js"></script>
+<script type="module" src="js/supa.js"></script>
+</body>
+</html>

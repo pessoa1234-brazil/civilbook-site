@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<!-- Civilbook — © 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.). Código proprietário, todos os direitos reservados. Uso/cópia/redistribuição não autorizados são vedados. Ver LICENSE. -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#185FA5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131417" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="author" content="CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.)">
+<meta name="copyright" content="© 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.) — Civilbook. Todos os direitos reservados.">
+<meta name="robots" content="noindex, nofollow, noai, noimageai">
+<!-- MODO PILOTO (18/set/2026) — esta página tem DUAS versões no mesmo arquivo. A completa é a que o navegador lê
+     daqui. A do piloto (só para convidados) é montada NA PUBLICAÇÃO por tools/modo-piloto.ts quando a chave
+     modo-piloto.json está ligada: os blocos marcados "fora" saem e os blocos marcados "dentro" (comentados aqui,
+     invisíveis na versão completa) entram; a meta robots vira noindex. Quem editar esta página mantém os
+     marcadores balanceados e sem aninhar — tests/modo-piloto.check.mjs trava e reprova o CI. Doc: docs/MODO-PILOTO.md. -->
+<title>Civilbook — Acesso por convite</title>
+<meta name="description" content="Civilbook: plataforma de referência técnica para profissionais da construção civil, em fase piloto, com acesso somente por convite.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Civilbook">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Civilbook — Acesso por convite">
+<meta property="og:description" content="Plataforma de referência técnica para profissionais da construção civil, em fase piloto, com acesso somente por convite.">
+<meta property="og:url" content="https://civilbook.com.br/">
+<meta property="og:image" content="https://civilbook.com.br/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="Logotipo do Civilbook">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Civilbook — Acesso por convite">
+<meta name="twitter:description" content="Plataforma de referência técnica para profissionais da construção civil, em fase piloto, com acesso somente por convite.">
+<meta name="twitter:image" content="https://civilbook.com.br/icon-512.png">
+
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh https://cdn.jsdelivr.net https://www.googletagmanager.com https://connect.facebook.net https://analytics.tiktok.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com https://www.facebook.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.sh https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://connect.facebook.net https://analytics.tiktok.com; object-src 'none'; base-uri 'self'">
+<script>(function(){try{var t=localStorage.getItem('cb-theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  /* Home do piloto. O modal de login é o MESMO da versão completa (js/auth-modal.js, montado por montarAuth), mas o
+     cadastro está fechado no servidor: a aba e o formulário de "Criar conta" não aparecem. Os ids continuam no
+     js/auth-modal.js (tests/marca-google.check.mjs exige cada um lá). */
+  #auth-abas, #tab-cadastro, #form-cadastro { display: none !important; }
+  main.piloto-main { padding: 0; }
+  .piloto-main .land-hero h1 { font-size: 34px; }
+  .piloto-convite { max-width: 520px; margin: 28px auto 0; padding: 22px 22px 24px; text-align: center; }
+  .piloto-convite p { font-size: 15px; line-height: 1.6; margin: 0 0 16px; color: var(--text-2); max-width: none; }
+  .piloto-dados { max-width: 760px; }
+  .piloto-dados p { font-size: 15.5px; line-height: 1.7; color: var(--text-2); margin: 0; }
+  .piloto-dados a { color: var(--blue); }
+  @media (max-width: 640px) {
+    .piloto-main .land-hero { padding: 40px 16px 36px; }
+    .piloto-main .land-hero h1 { font-size: 25px; }
+    .piloto-main .land-hero p { font-size: 15.5px; }
+    .piloto-convite { padding: 18px 16px 20px; }
+    .piloto-dados { padding: 36px 16px; }
+    .piloto-dados h2 { font-size: 22px; }
+  }
+</style>
+<script src="js/config.js"></script>
+<script src="js/copyright.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/consent.js"></script>
+<script src="js/a11y-icons.js"></script>
+<script src="js/tracking.js"></script>
+<script src="js/eventos.js"></script>
+</head>
+<body class="landing">
+
+<header class="nav">
+  <div class="logo">
+    <img class="logo-icon" src="icon.svg" alt="Civilbook">
+    <span>Civilbook</span>
+  </div>
+  <div class="nav-right" style="display:flex;gap:10px">
+    <button class="btn icon-only" data-theme-toggle onclick="THEME.toggle()" aria-label="Alternar tema"><i class="ti ti-moon-stars"></i></button>
+    <button class="btn" onclick="abrirAuth('login')"><i class="ti ti-login" aria-hidden="true"></i>Entrar</button>
+  </div>
+</header>
+
+<main class="piloto-main">
+  <section class="land-hero">
+    <div class="land-hero-inner">
+      <span class="land-badge"><i class="ti ti-lock" aria-hidden="true"></i> Fase piloto · acesso por convite</span>
+      <h1>Plataforma de referência técnica para profissionais da construção civil</h1>
+      <p>Em fase piloto, com acesso somente por convite.</p>
+      <div class="card piloto-convite">
+        <p><strong>Recebeu um convite?</strong> Abra o link do e-mail para criar sua senha. Depois, é só entrar.</p>
+        <button class="btn primary lg" onclick="abrirAuth('login')"><i class="ti ti-login" aria-hidden="true"></i>Entrar</button>
+      </div>
+    </div>
+  </section>
+  <section class="land-section piloto-dados" id="dados-google">
+    <h2>Sua conta e seus dados</h2>
+    <p>Quem tem convite entra com e-mail e senha ou com o botão <strong>Entrar com Google</strong>. No login com Google pedimos só os dados básicos do perfil (nome, e-mail e foto), usados para identificar a sua conta. A <strong>conexão com o Google Drive é opcional</strong>, feita por você dentro do app, e alcança apenas os arquivos que o Civilbook cria ou que você abre por ele. Não vendemos seus dados pessoais, e os dados recebidos do Google não são usados para publicidade direcionada. Detalhes na <a href="privacidade.html">Política de Privacidade</a> e nos <a href="termos.html">Termos de Uso</a>.</p>
+  </section>
+</main>
+<footer class="footer" style="text-align:center">
+  <p><a href="privacidade.html" style="color:var(--blue)">Política de Privacidade</a> · <a href="termos.html" style="color:var(--blue)">Termos de Uso</a> · <a href="#" onclick="cbCookies.abrir();return false;" style="color:var(--blue)">Gerenciar cookies</a></p>
+  <p style="margin-top:8px;font-size:12px;color:var(--text-3)">© 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.) · Civilbook. Todos os direitos reservados.</p>
+</footer>
+
+<!-- d13: honeypot anti-scraping — desautorizado no robots.txt; bot que ignora e segue é sinalizável no WAF (ver docs/PROTECAO-CONTEUDO.md). Inofensivo a humanos (off-screen, aria-hidden, nofollow). -->
+<a href="/_trap/nao-seguir" rel="nofollow" aria-hidden="true" tabindex="-1" class="cb-trap">·</a>
+
+<!-- Modal de autenticação. O .auth-modal nasce VAZIO: o conteúdo (abas, "Entrar com Google", formulários com senha)
+     vive em js/auth-modal.js (window.cbAuthModalHTML) e só entra no DOM em abrirAuth() → montarAuth(), no script desta
+     página. Motivo: o verificador de marca do Google (OAuth) lia os dois <form> com senha no DOM inicial e classificava
+     a home como "protegida por login" — e a 2ª tentativa mostrou que até um <template> inerte era lido. Por isso o
+     markup saiu do HTML por completo: a home servida não tem formulário de login nenhum. -->
+<div class="auth-overlay hidden" id="auth-overlay" onclick="if(event.target===this)fecharAuth()">
+  <div class="auth-modal" id="auth-modal"></div>
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/auth-modal.js"></script>
+<script>
+let planoEscolhido = null;
+
+// Chamado por js/supa.js depois que AUTH.boot() resolve a sessão.
+window.cbInit = function () {
+  // b7 (esconder "Entrar com Google" sem backend) mudou para montarAuth(): o modal só existe depois de abrirAuth().
+  if (typeof PRECOS !== "undefined") PRECOS.aplicarLanding();   // d14: preços da fonte única (no-op se vazio/off)
+  if (AUTH.session()) {
+    document.querySelector(".nav-right").innerHTML =
+      `<button class="btn primary" onclick="window.location.href='app.html'"><i class="ti ti-layout-dashboard"></i>Abrir o app</button>`;
+  }
+  // 18/set/2026: a volta do Google RECUSADA (conta sem convite, com o cadastro fechado no servidor) chega aqui pelo
+  // app.html, que guardou só o MOTIVO; a frase é a do js/auth.js (a mesma do cadastro fechado) e vale uma vez. Antes
+  // a pessoa caía no login sem saber por quê.
+  const avisoLogin = typeof AUTH.consumirAvisoOAuth === "function" ? AUTH.consumirAvisoOAuth() : "";
+  if (window.location.hash === "#entrar" || avisoLogin) abrirAuth("login");
+  if (avisoLogin) mostrarAvisoLogin(avisoLogin);
+};
+function mostrarAvisoLogin(texto) {
+  const el = document.getElementById("l-erro");
+  if (!el) return;   // modal não montado (js/auth-modal.js não carregou): montarAuth já mostrou o aviso dele
+  el.textContent = texto;
+  el.classList.remove("hidden");
+}
+
+// O modal nasce VAZIO no HTML (markup em js/auth-modal.js → window.cbAuthModalHTML) e é montado aqui, no 1º abrirAuth().
+// Motivo: o verificador de marca do Google (OAuth) lia os <form> com senha no DOM inicial e classificava a home
+// como "protegida por login". Idempotente: só monta uma vez. Tudo que mexe no modal (trocarAba, fazerLogin,
+// fazerCadastro, entrarComGoogle) só roda depois de abrirAuth(), então nunca vê o modal vazio.
+// Devolve true quando o modal está montado; false quando js/auth-modal.js não carregou (404, bloqueio de
+// extensão): nesse caso o overlay mostra um aviso FECHÁVEL em vez de uma caixa vazia, e abrirAuth não toca nas abas.
+function montarAuth() {
+  const m = document.getElementById("auth-modal");
+  if (m.dataset.montado === "1") return true;
+  if (typeof window.cbAuthModalHTML !== "string") {
+    console.error("js/auth-modal.js não carregou — modal de login indisponível");
+    m.innerHTML = '<button class="auth-close" onclick="fecharAuth()" aria-label="Fechar"><i class="ti ti-x"></i></button>'
+      + '<p style="margin:28px 8px 12px;text-align:center;color:var(--text-2)">Não foi possível carregar o formulário de entrada. Recarregue a página e tente de novo.</p>';
+    return false;
+  }
+  m.innerHTML = window.cbAuthModalHTML;
+  m.dataset.montado = "1";
+  // b7: o botão "Entrar com Google" só faz sentido com backend (Supabase). Esconde em modo local/?e2e.
+  // CB_CONFIG.SUPA_READY é definido de forma síncrona em js/config.js (no <head>) — já está resolvido aqui.
+  if (!(window.CB_CONFIG && window.CB_CONFIG.SUPA_READY)) { const s = document.getElementById("auth-social"); if (s) s.style.display = "none"; }
+  renderizarCaptcha();
+  return true;
+}
+// CAPTCHA (docs/SECURITY.md §7): o auto-render do Turnstile varre o DOM só no load, e o markup do modal só entra
+// no DOM ao abrir — um <div class="cf-turnstile"> nele NUNCA viraria widget sozinho. Por isso o render é explícito e roda
+// nos dois momentos possíveis: ao montar o modal (script já carregado) e no onload do script (modal já montado).
+// Ao ativar, carregar o script com `?onload=cbTurnstileReady&render=explicit` e pôr o <div class="cf-turnstile">
+// (sem data-sitekey; a chave vem de CB_CONFIG.CAPTCHA_SITE_KEY) dentro dos <form> em js/auth-modal.js. No-op sem chave.
+function renderizarCaptcha() {
+  const chave = window.CB_CONFIG && window.CB_CONFIG.CAPTCHA_SITE_KEY;
+  if (!chave || !window.turnstile) return;
+  document.querySelectorAll("#auth-modal .cf-turnstile").forEach((el) => {
+    if (!el.childElementCount) window.turnstile.render(el, { sitekey: chave });
+  });
+}
+window.cbTurnstileReady = renderizarCaptcha;
+function abrirAuth(aba) {
+  const montado = montarAuth();
+  if (window.CBEV) CBEV.track("cta_click", { cta: "auth_" + aba });
+  document.getElementById("auth-overlay").classList.remove("hidden");
+  if (montado) trocarAba(aba);
+}
+function fecharAuth() {
+  document.getElementById("auth-overlay").classList.add("hidden");
+}
+function trocarAba(aba) {
+  const el = (id) => document.getElementById(id);
+  if (!el("tab-login")) return;   // modal não montado (ver montarAuth)
+  // Sai da etapa de recuperação de senha, se aberta: o controle mora em js/auth-modal.js, junto do markup, e
+  // nada dela vem para este HTML (tests/recuperar-senha.check.mjs).
+  if (window.cbRecuperar) window.cbRecuperar.esconder();
+  el("tab-login").classList.toggle("active", aba === "login");
+  el("tab-cadastro").classList.toggle("active", aba === "cadastro");
+  el("form-login").classList.toggle("hidden", aba !== "login");
+  el("form-cadastro").classList.toggle("hidden", aba !== "cadastro");
+}
+async function assinar(plano) {
+  planoEscolhido = plano;
+  if (!AUTH.session()) { abrirAuth("cadastro"); return; }
+  await seguirAposAuth("sessao");
+}
+// Após login/cadastro: plano pago + pagamento ativo → checkout; senão entra no app.
+// 0098 (17/set/2026) — NENHUM caminho desta página grava plano. Antes, com os pagamentos desligados, quem
+// escolhia um plano pago era promovido direto (o AUTH.upgrade com o plano escolhido gravava profiles.plano
+// do navegador). Agora plano pago nasce SÓ do checkout (o webhook do PSP grava com service_role): com os
+// pagamentos desligados a conta entra no plano em que está (nova = gratuito) e o app avisa com todas as
+// letras — o recado vai por sessionStorage e é lido UMA vez por cbAvisoPlanoDaLanding (js/app.js).
+// origem: "cadastro" (conta recém-criada) | "login" | "sessao" (já estava logado) — só muda o texto do aviso.
+async function seguirAposAuth(origem) {
+  if (planoPago() && pagamentosAtivos()) {
+    return PAY.checkout(planoEscolhido);   // abre o checkout do Asaas (modal de CPF → fatura)
+  }
+  if (planoPago()) deixarAvisoPlano(origem);
+  window.location.href = "app.html";
+}
+function planoPago() { return /^pro-(mensal|anual)$/.test(planoEscolhido || ""); }
+function pagamentosAtivos() { return typeof PAY !== "undefined" && PAY.ativo(); }
+function deixarAvisoPlano(origem) { try { sessionStorage.setItem("cb-aviso-plano", origem === "cadastro" ? "cadastro" : "sessao"); } catch (e) {} }
+// CAPTCHA opcional (Cloudflare Turnstile/hCaptcha nativo do Supabase): só ativo quando
+// CB_CONFIG.CAPTCHA_SITE_KEY está configurado e o widget foi renderizado; senão retorna ""
+// e o fluxo segue normal. Passo a passo de ativação em docs/SECURITY.md.
+function cbCaptchaToken() { try { return (window.CB_CONFIG && window.CB_CONFIG.CAPTCHA_SITE_KEY && window.turnstile) ? (turnstile.getResponse() || "") : ""; } catch { return ""; } }
+function cbResetCaptcha() { try { if (window.CB_CONFIG && window.CB_CONFIG.CAPTCHA_SITE_KEY && window.turnstile) turnstile.reset(); } catch {} }
+// Cooldown visual no botão (espelha AUTH.cooldownRestante): conta regressiva e reabilita ao zerar.
+function cbCooldownBotao(btn, segundos) {
+  if (!btn) return;
+  const orig = btn.innerHTML; btn.disabled = true; let s = segundos;
+  (function tick() {
+    if (s <= 0) { btn.disabled = false; btn.innerHTML = orig; return; }
+    btn.textContent = "Aguarde " + s + "s…"; s--; setTimeout(tick, 1000);
+  })();
+}
+async function entrarComGoogle(btn) {
+  const el = document.getElementById("g-erro"); if (el) el.classList.add("hidden");
+  if (btn) btn.disabled = true;
+  if (window.CBEV) CBEV.track("login", { metodo: "google" });
+  // O retorno do Google cai direto no app.html (planoEscolhido morre com esta página): o recado do plano
+  // pago com pagamentos desligados tem de ficar ANTES do redirect. Falhou → o recado sai junto.
+  const avisar = planoPago() && !pagamentosAtivos();
+  if (avisar) deixarAvisoPlano("sessao");
+  const r = await AUTH.loginGoogle();   // sucesso: redireciona ao Google; só volta aqui se falhar
+  if (r && r.erro) {
+    if (avisar) { try { sessionStorage.removeItem("cb-aviso-plano"); } catch (e) {} }
+    if (el) { el.textContent = r.erro; el.classList.remove("hidden"); } if (btn) btn.disabled = false;
+  }
+}
+async function fazerLogin(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector("button[type=submit]"); if (btn) btn.disabled = true;
+  const el = document.getElementById("l-erro"); el.classList.add("hidden");
+  const r = await AUTH.login(document.getElementById("l-email").value, document.getElementById("l-senha").value, cbCaptchaToken());
+  if (r.erro) {
+    el.textContent = r.erro; el.classList.remove("hidden"); cbResetCaptcha();
+    if (r.cooldown > 0) cbCooldownBotao(btn, r.cooldown); else if (btn) btn.disabled = false;
+    return false;
+  }
+  await seguirAposAuth("login");
+  return false;
+}
+async function fazerCadastro(e) {
+  e.preventDefault();
+  const erroEl = document.getElementById("c-erro"); erroEl.classList.add("hidden");
+  if (!document.getElementById("c-consent").checked) {
+    erroEl.textContent = "É necessário aceitar a Política de Privacidade (LGPD)."; erroEl.classList.remove("hidden"); return false;
+  }
+  const btn = e.target.querySelector("button[type=submit]"); if (btn) btn.disabled = true;
+  const conselho = document.getElementById("c-conselho").value;
+  const registro = document.getElementById("c-registro").value.trim();
+  // Combina conselho + número no campo crea_cau (ex.: "CAU A12345"). Estudante/sem nº gravam só o conselho.
+  const creaCau = [conselho, conselho && conselho !== "Estudante" ? registro : ""].filter(Boolean).join(" ");
+  // 0098: toda conta NASCE gratuita — o plano escolhido na vitrine não vai para o cadastro (nem no
+  // metadado do Supabase, nem no modo local); ele só decide o que acontece DEPOIS (checkout ou aviso).
+  const r = await AUTH.register(
+    document.getElementById("c-nome").value,
+    document.getElementById("c-email").value,
+    document.getElementById("c-senha").value,
+    "gratuito",
+    creaCau ? { crea_cau: creaCau } : undefined,
+    cbCaptchaToken()
+  );
+  if (r.erro) { erroEl.textContent = r.erro; erroEl.classList.remove("hidden"); cbResetCaptcha(); if (btn) btn.disabled = false; return false; }
+  if (window.CBEV) CBEV.track("sign_up", { metodo: "email", plano: planoEscolhido || "gratuito" });
+  if (r.confirmar) {
+    // Com confirmação de e-mail a pessoa NÃO segue para o app agora (seguirAposAuth não roda): o aviso do
+    // plano pago com pagamentos desligados tem de ser dado aqui, senão ela só descobre depois de confirmar.
+    const pagoSemCheckout = planoPago() && !pagamentosAtivos();
+    erroEl.style.color = "var(--teal)";
+    erroEl.textContent = "Conta criada! Confira seu e-mail para confirmar o cadastro antes de entrar."
+      + (pagoSemCheckout ? " Pagamentos ainda não estão ativos; sua conta foi criada no plano gratuito. Você pode testar o PRO por 7 dias dentro do app." : "");
+    erroEl.classList.remove("hidden"); if (btn) btn.disabled = false; return false;
+  }
+  await seguirAposAuth("cadastro");
+  return false;
+}
+async function enviarOrcamento(e) {
+  e.preventDefault();
+  const pedido = {
+    nome: document.getElementById("q-nome").value,
+    email: document.getElementById("q-email").value,
+    telefone: document.getElementById("q-tel").value,
+    empresa: document.getElementById("q-empresa").value,
+    tipologia: document.getElementById("q-tipologia").value,
+    area: document.getElementById("q-area").value,
+    qtd_empreendimentos: document.getElementById("q-qtd").value,
+    solucao: document.getElementById("q-solucao").value,
+    mensagem: document.getElementById("q-msg").value,
+    ...(typeof cbAttrib === "function" ? cbAttrib() : {})   // utm_*/referrer (atribuição do lead)
+  };
+  if (window.CB_CONFIG && window.CB_CONFIG.SUPA_READY && window.supa) {
+    try { await window.supa.from("orcamentos").insert(pedido); }
+    catch (err) { console.error("orcamento:", err); }
+  } else {
+    const lista = JSON.parse(localStorage.getItem("cb-orcamentos") || "[]");
+    lista.push({ ...pedido, em: new Date().toISOString() });
+    localStorage.setItem("cb-orcamentos", JSON.stringify(lista));
+  }
+  document.getElementById("quote-form").querySelectorAll("input,select,textarea,button[type=submit]").forEach(el => el.disabled = true);
+  document.getElementById("quote-ok").classList.remove("hidden");
+  if (window.CBEV) CBEV.track("generate_lead", { solucao: pedido.solucao || "" });
+  return false;
+}
+</script>
+<!-- SDK Supabase vendorizado (local-first); supa.js usa window.supabase e só cai p/ esm.sh se faltar -->
+<script src="js/vendor/supabase.js"></script>
+<script type="module" src="js/supa.js"></script>
+</body>
+</html>
