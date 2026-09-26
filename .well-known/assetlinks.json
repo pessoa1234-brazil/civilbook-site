@@ -1,0 +1,11 @@
+[
+  {
+    "_comentario": "PLACEHOLDER — Digital Asset Links do Android (preparação da Play Store via TWA). Este arquivo prova ao Chrome que o app Android e o domínio civilbook.com.br pertencem ao mesmo dono; sem ele o app abre COM a barra de endereço, parecendo um navegador em vez de um aplicativo. Enquanto o sha256_cert_fingerprints estiver vazio, o arquivo é inerte: não afeta o site nem o PWA. PARA ATIVAR: gerar o keystore de assinatura, pegar o SHA-256 do certificado (no Play Console, em Configuração > Integridade do app > Assinatura de apps, use a impressão digital do certificado de assinatura DO GOOGLE, não a de upload) e colar abaixo. Depois publicar o site e conferir em https://civilbook.com.br/.well-known/assetlinks.json. Detalhes em docs/DEPLOY.md.",
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "br.com.civilbook.twa",
+      "sha256_cert_fingerprints": []
+    }
+  }
+]

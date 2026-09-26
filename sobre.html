@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="cb-versao" content="cd8b896">
+<!-- Civilbook — © 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.). Código proprietário, todos os direitos reservados. Uso/cópia/redistribuição sem autorização escrita é proibido (Lei 9.609/98 e 9.610/98). -->
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
+<!-- MODO PILOTO (18/set/2026): na publicação com a chave modo-piloto.json ligada, tools/modo-piloto.ts tira os
+     blocos marcados "fora" e põe os "dentro" (comentados aqui): a página vira um aviso curto que leva à home, fora
+     dos buscadores. Marcadores balanceados e sem aninhar — tests/modo-piloto.check.mjs trava. -->
+<title>Acesso por convite — Civilbook</title>
+<meta name="description" content="O Civilbook está em fase piloto, com acesso somente por convite.">
+
+<meta name="author" content="CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.)">
+<meta name="copyright" content="© 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.) — Civilbook. Todos os direitos reservados.">
+<link rel="apple-touch-icon" href="icon-180.png?v=cd8b896">
+<script>(function(){try{var t=localStorage.getItem('cb-theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<!-- Ícones: subconjunto LOCAL gerado por tools/gerar-icones.ts (a52 P1). Antes esta linha baixava 37 KB de CSS do
+     jsDelivr em @latest, de outra origem e sem font-display — metade da primeira visita e um servidor de terceiro no
+     caminho crítico do boot. Agora a folha é nossa e traz só as classes usadas, com font-display: block. NÃO edite o
+     arquivo gerado: rode a ferramenta. E desde 21/set/2026 (P1b) a FONTE também é nossa: a folha pede
+     css/tabler-icons-<versao>-<soma>-sub.woff2, 33 KB com os 260 glifos usados, no lugar dos 502 KB da fonte
+     inteira do CDN. Travado por tests/icones.check.mjs. -->
+<link rel="stylesheet" href="css/icones.css?v=cd8b896">
+<link rel="stylesheet" href="css/style.css?v=cd8b896">
+<script src="js/theme.js?v=cd8b896"></script>
+<script src="js/a11y-icons.js?v=cd8b896"></script>
+</head>
+<body>
+
+<!-- d20/landing (17/set/2026): o texto completo de "Sobre a plataforma" mora AQUI, para a landing ficar leve.
+     A landing mantém um resumo curto (seção #sobre) que já cumpre o que o verificador de marca do Google cobra
+     da PÁGINA INICIAL declarada (civilbook.com.br): o que o app faz e por que pede dados, visível sem login e
+     com link para a Política e os Termos. Esta página é o "Saiba mais" — se um dia a página inicial declarada
+     no Google mudar para cá, o resumo da landing pode encolher, não antes. -->
+<header class="nav">
+  <a class="logo" href="index.html" style="text-decoration:none;color:inherit">
+    <img class="logo-icon" src="icon.svg?v=cd8b896" alt="">
+    <span>Civilbook</span>
+  </a>
+  <nav class="land-links">
+    <a href="privacidade.html">Privacidade</a>
+    <a href="termos.html">Termos</a>
+  </nav>
+  <div class="nav-right" style="display:flex;gap:10px">
+    <button class="btn icon-only" data-theme-toggle onclick="THEME.toggle()" aria-label="Alternar tema"><i class="ti ti-moon-stars"></i></button>
+    <a class="btn primary" href="app.html"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Abrir o app</a>
+  </div>
+</header>
+
+<main style="max-width:760px;margin:0 auto;padding:32px 24px 60px">
+  <h1 class="page-title">Acesso por convite</h1>
+  <p class="page-sub">O Civilbook está em fase piloto, com acesso somente por convite.</p>
+  <p style="font-size:15.5px;line-height:1.7;color:var(--text-2);margin:0 0 14px">Recebeu um convite? Abra o link do e-mail para criar sua senha. Depois, é só entrar pela página inicial.</p>
+  <p style="margin-top:28px;display:flex;gap:10px;flex-wrap:wrap">
+    <a href="index.html" class="btn primary"><i class="ti ti-arrow-left" aria-hidden="true"></i> Ir para a página inicial</a>
+  </p>
+</main>
+
+<footer class="footer" style="text-align:center">
+  <p><strong>Civilbook</strong> — civilbook.com.br</p>
+  <p style="margin-top:8px"><a href="privacidade.html" style="color:var(--blue)">Política de Privacidade</a> · <a href="termos.html" style="color:var(--blue)">Termos de Uso</a></p>
+  <p style="margin-top:8px;font-size:12px;color:var(--text-3)">© 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.) · Civilbook. Todos os direitos reservados.</p>
+</footer>
+
+</body>
+</html>
