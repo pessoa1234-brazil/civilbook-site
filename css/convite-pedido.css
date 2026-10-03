@@ -1,0 +1,40 @@
+/* Civilbook - Codigo proprietario. (c) 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.).
+   Todos os direitos reservados. Proibida copia, redistribuicao ou uso sem
+   autorizacao escrita do titular. Ver LICENSE (Lei 9.609/98 e 9.610/98). */
+
+/* Pedido de convite (d48, 01/out/2026) — o formulário « Solicitar convite » da home do PILOTO. Arquivo PRÓPRIO, ligado
+   por um <link> dentro do bloco piloto:dentro do corpo do index.html: só a home do piloto o carrega. Fora do
+   css/style.css de propósito — aquele é subrecurso da abertura do app.html, cuja medida é travada em bytes
+   (tests/abertura.check.mjs), e estas regras não servem ao app. Fora do <style> do <head> do piloto também: o
+   cabeçalho da home do piloto é o texto do resultado de busca e não muda por causa do formulário.
+   Reaproveita .field/.field-row do css/style.css (que já viram uma coluna abaixo de 560 px). Nos campos, 16 px no
+   celular E em toda tela de toque: abaixo disso o Safari do iPhone dá zoom ao focar (a mesma régua do campo do
+   Assessor). Sem ícone. Travado por tests/convite-pedido.check.mjs. */
+.piloto-pedir { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+.land-section.piloto-pedido { max-width: 720px; padding-top: 8px; }
+.piloto-pedido .card { padding: 22px; }
+.piloto-pedido h2 { font-size: 24px; margin: 0 0 8px; }
+.piloto-pedido h2:focus { outline: none; }
+.piloto-pedido-quem { font-size: 15px; line-height: 1.6; color: var(--text-2); margin: 0 0 16px; }
+.piloto-pedido .field input, .piloto-pedido .field select { min-width: 0; width: 100%; }
+.piloto-aceite { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.5; color: var(--text-2); margin: 2px 0 12px; cursor: pointer; }
+.piloto-aceite input { flex: none; width: 20px; height: 20px; margin: 1px 0 0; }
+.piloto-aceite a, .piloto-pedido-nota a { color: var(--blue); }
+.piloto-pedido-prazo { font-size: 14px; color: var(--text-2); margin: 0 0 12px; }
+.piloto-pedido #cp-enviar { width: 100%; }
+/* depois do « Pedido recebido » o botão fica desabilitado: tem de PARECER desabilitado (conferido no navegador em 01/out) */
+.piloto-pedido #cp-enviar:disabled { opacity: .55; cursor: not-allowed; }
+.piloto-pedido-espera { margin-top: 14px; color: var(--text-2); font-size: 14px; line-height: 1.5; }
+.piloto-pedido-erro { margin-top: 14px; color: var(--red); font-size: 14px; font-weight: 500; line-height: 1.5; }
+.piloto-pedido-ok { margin-top: 14px; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--teal); color: var(--text); font-size: 14.5px; line-height: 1.55; }
+.piloto-pedido-ok p { margin: 0; }
+.piloto-pedido-ok p + p { margin-top: 6px; color: var(--text-2); }
+.piloto-pedido-nota { font-size: 12.5px; line-height: 1.5; color: var(--text-3); margin: 14px 0 0; }
+@media (max-width: 640px), (pointer: coarse) {
+  .piloto-pedido .field input, .piloto-pedido .field select { font-size: 16px; }
+}
+@media (max-width: 640px) {
+  .land-section.piloto-pedido { padding: 0 16px 28px; }
+  .piloto-pedido .card { padding: 18px 16px; }
+  .piloto-pedido h2 { font-size: 21px; }
+}
