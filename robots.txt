@@ -1,0 +1,69 @@
+# Civilbook — robots.txt (d13: anti-scraping; d54: robos de IA de busca; ver docs/PROTECAO-CONTEUDO.md)
+# A pagina inicial (/) e indexavel nos DOIS modos do site (completo e piloto). No completo, Sobre, Politica e
+# Termos tambem; no modo piloto (docs/MODO-PILOTO.md) elas saem do indice pelo noindex da PROPRIA pagina, e
+# nunca por Disallow aqui — que esconderia esse noindex do robo. O app, o admin e os fontes ficam fora dos buscadores.
+# robots.txt so vale p/ crawlers que RESPEITAM o padrao — nao impede um scraper determinado.
+# O navegador/app ignora robots.txt: bloquear /js/ e /data/ aqui NAO quebra o app (so afeta bots).
+#
+# Robos de IA de BUSCA e citacao — OAI-SearchBot (busca do ChatGPT), PerplexityBot (Perplexity), Claude-SearchBot
+# (busca do Claude) e Meta-WebIndexer (busca da Meta) — ficam LIBERADOS DE PROPOSITO (decisao do fundador de
+# 05/out/2026, tarefa d54): sem isso o ChatGPT e o Perplexity nao podem citar o site. Eles estao NO MESMO GRUPO do
+# "*" (um grupo pode ter varias linhas User-agent, RFC 9309 §2.2.1): leem o que o "*" le e nada alem — app, admin e
+# fontes continuam fora. Nomeados para que a conferencia (tools/modo-piloto.ts e tests/seo.check.mjs) os pergunte.
+
+User-agent: OAI-SearchBot
+User-agent: PerplexityBot
+User-agent: Claude-SearchBot
+User-agent: Meta-WebIndexer
+User-agent: *
+Disallow: /app.html
+Disallow: /admin.html
+Disallow: /viabilidade.html
+Disallow: /js/
+Disallow: /data/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /supabase/
+Disallow: /_trap/          # honeypot: bot que ignora isto e acessa se denuncia (logar no WAF)
+
+# Robos de IA de TREINO e coleta — barrados (d13), cada um no seu grupo.
+# ChatGPT-User (o acesso que o ChatGPT faz A PEDIDO de quem conversa) continua barrado como estava: a decisao de
+# 05/out/2026 nomeou so os quatro de busca acima, e libera-lo e sub-decisao PENDENTE do fundador. (Os fornecedores
+# documentam que esse tipo de acesso pode ignorar o robots.txt.)
+User-agent: GPTBot
+Disallow: /
+User-agent: ChatGPT-User
+Disallow: /
+User-agent: ClaudeBot
+Disallow: /
+User-agent: anthropic-ai
+Disallow: /
+User-agent: Claude-Web
+Disallow: /
+User-agent: Google-Extended
+Disallow: /
+User-agent: CCBot
+Disallow: /
+User-agent: Bytespider
+Disallow: /
+User-agent: Amazonbot
+Disallow: /
+User-agent: Applebot-Extended
+Disallow: /
+User-agent: Meta-ExternalAgent
+Disallow: /
+User-agent: FacebookBot
+Disallow: /
+User-agent: cohere-ai
+Disallow: /
+User-agent: Diffbot
+Disallow: /
+User-agent: Omgilibot
+Disallow: /
+User-agent: ImagesiftBot
+Disallow: /
+
+# Mapa do site (17/set/2026): e assim que o Google acha as paginas publicas sem ninguem submeter nada.
+# A linha vale para o arquivo INTEIRO (nao pertence a nenhum grupo User-agent acima) e o endereco tem de ser
+# absoluto — e o unico jeito previsto pelo padrao. O sitemap.xml e gerado do git; ver tests/seo.check.mjs.
+# Modo piloto (docs/MODO-PILOTO.md): sem a linha Sitemap. So a pagina inicial (/) e indexavel; as outras paginas saem dos buscadores pelo noindex de cada uma, e o rastreio segue liberado para o robo LER esse noindex (Disallow nao tira do indice).
