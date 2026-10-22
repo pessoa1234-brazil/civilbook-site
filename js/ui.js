@@ -1,0 +1,19 @@
+// Civilbook - Codigo proprietario. (c) 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.).
+// Todos os direitos reservados. Proibida copia, redistribuicao, modificacao ou
+// uso sem autorizacao escrita do titular. Ver LICENSE (Lei 9.609/98 e 9.610/98).
+// Componentes de terceiros mantem suas proprias licencas.
+function toast(i,n){let e=document.getElementById("cb-toasts");if(!e){e=document.createElement("div");e.id="cb-toasts";e.className="cb-toasts";document.body.appendChild(e)}const r={info:"ti-info-circle",success:"ti-circle-check",error:"ti-alert-circle",warn:"ti-alert-triangle"};const o=document.createElement("div");o.className="cb-toast cb-toast-"+(n||"info");o.setAttribute("role","status");o.innerHTML=`<i class="ti ${r[n]||r.info}"></i><span></span>`;o.querySelector("span").textContent=i;e.appendChild(o);requestAnimationFrame(()=>o.classList.add("show"));const d=()=>{o.classList.remove("show");setTimeout(()=>o.remove(),250)};o.addEventListener("click",d);setTimeout(d,3400)}function cbConfirmar(i,n){const e=n||{};const r=String(i||"");const o=typeof e.perigo==="boolean"?e.perigo:/^(excluir|remover|apagar|expurgar|deletar)\b/i.test(r.trim())||/não há como desfazer|nao ha como desfazer|não pode ser desfeita|nao pode ser desfeita|irrevers/i.test(r);return new Promise(d=>{const s=document.createElement("div");s.className="cb-modal-ov";s.setAttribute("role","dialog");s.setAttribute("aria-modal","true");s.innerHTML=`<div class="card cb-modal-box cb-confirm">
+      <strong class="cb-confirm-tit"></strong>
+      <div class="cb-confirm-msg"></div>
+      <p class="page-sub cb-confirm-det" style="font-size:12px;margin:6px 0 0"></p>
+      <div class="cb-confirm-acoes">
+        <button type="button" class="btn" data-cb="nao"></button>
+        <button type="button" class="btn ${o?"danger":"primary"}" data-cb="sim"></button>
+      </div>
+    </div>`;const b=s.querySelector(".cb-confirm-tit");b.textContent=e.titulo||(o?"Confirmar exclusão":"Confirmar");const g=s.querySelector(".cb-confirm-msg");String(i||"").split("\n").forEach(t=>{const u=document.createElement("p");u.textContent=t;u.style.margin=t.trim()?"8px 0 0":"4px 0 0";g.appendChild(u)});const p=s.querySelector(".cb-confirm-det");if(e.detalhe)p.textContent=e.detalhe;else p.remove();const l=s.querySelector('[data-cb="sim"]');const c=s.querySelector('[data-cb="nao"]');l.textContent=e.ok||(o?"Excluir":"Confirmar");c.textContent=e.cancelar||"Cancelar";let f=true;const m=document.activeElement;const a=t=>{if(!f)return;f=false;document.removeEventListener("keydown",v,true);s.remove();if(m&&m.focus){try{m.focus()}catch{}}d(t)};const v=t=>{if(t.key==="Escape"){t.preventDefault();t.stopPropagation();a(false)}else if(t.key==="Enter"&&document.activeElement!==c){t.preventDefault();t.stopPropagation();a(true)}else if(t.key==="Tab"){t.preventDefault();(document.activeElement===c?l:c).focus()}};s.addEventListener("click",t=>{if(t.target===s)a(false)});l.addEventListener("click",()=>a(true));c.addEventListener("click",()=>a(false));document.addEventListener("keydown",v,true);document.body.appendChild(s);requestAnimationFrame(()=>c.focus())})}if(typeof window!=="undefined")window.cbConfirmar=cbConfirmar;const UI={skelCards(i){const n=`<div class="card" style="margin-bottom:10px">
+      <div class="skel" style="height:15px;width:42%;margin-bottom:12px"></div>
+      <div class="skel" style="height:10px;width:82%;margin-bottom:7px"></div>
+      <div class="skel" style="height:10px;width:64%"></div>
+    </div>`;return n.repeat(i||3)},skelRow(i){const n=`<div class="reco-card"><div class="skel" style="height:36px;width:36px;border-radius:10px;margin-bottom:10px"></div>
+      <div class="skel" style="height:12px;width:90%;margin-bottom:6px"></div>
+      <div class="skel" style="height:10px;width:60%"></div></div>`;return`<div class="reco-row">${n.repeat(i||5)}</div>`}};

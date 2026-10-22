@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="cb-versao" content="4d8337e">
+<!-- Civilbook — © 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.). Código proprietário, todos os direitos reservados. Uso/cópia/redistribuição não autorizados são vedados. Ver LICENSE. -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh https://cdn.jsdelivr.net; worker-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.sh; object-src 'none'; base-uri 'self'">
+<title>Admin — Civilbook</title>
+<meta name="author" content="CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.)">
+<meta name="copyright" content="© 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.) — Civilbook. Todos os direitos reservados.">
+<meta name="robots" content="noindex, nofollow, noai, noimageai">
+<script>(function(){try{var t=localStorage.getItem('cb-theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<!-- Ícones: subconjunto LOCAL gerado por tools/gerar-icones.ts (a52 P1). Antes esta linha baixava 37 KB de CSS do
+     jsDelivr em @latest, de outra origem e sem font-display — metade da primeira visita e um servidor de terceiro no
+     caminho crítico do boot. Agora a folha é nossa e traz só as classes usadas, com font-display: block. NÃO edite o
+     arquivo gerado: rode a ferramenta. E desde 21/set/2026 (P1b) a FONTE também é nossa: a folha pede
+     css/tabler-icons-<versao>-<soma>-sub.woff2, 33 KB com os 260 glifos usados, no lugar dos 502 KB da fonte
+     inteira do CDN. Travado por tests/icones.check.mjs. -->
+<link rel="stylesheet" href="css/icones.css?v=4d8337e">
+<link rel="stylesheet" href="css/style.css?v=4d8337e">
+<script src="js/config.js?v=4d8337e"></script>
+<script src="js/copyright.js?v=4d8337e"></script>
+<script src="js/a11y-icons.js?v=4d8337e"></script>
+<style>
+  /* d43 (01/out/2026): overflow-x — com 13 abas a barra passava da largura do celular e a PÁGINA rolava de lado;
+     agora quem rola é a barra. No computador nada muda: as abas continuam encolhendo como antes. */
+  .adm-tabs { display:none; max-width:1080px; margin:0 auto; padding:20px 24px 0; gap:0; overflow-x:auto; }
+  .adm-tab { padding:8px 18px; background:var(--bg); color:var(--text-2); border:1.5px solid var(--border); border-bottom:none; border-radius:8px 8px 0 0; cursor:pointer; font-size:13px; font-weight:500; transition:background .15s,color .15s; }
+  .adm-tab.active { background:var(--surface,#fff); color:var(--blue); border-color:var(--blue); position:relative; z-index:1; }
+  [data-theme="dark"] .adm-tab.active { background:var(--bg-2,#1e1e1e); }
+  .adm-tab:hover:not(.active) { background:var(--bg-2,#eee); }
+  .adm-body { max-width:1080px; margin:0 auto; padding:0 24px 60px; border-top:1.5px solid var(--border); padding-top:24px; }
+  .adm-body--embed { max-width:none; padding:0 !important; border-top:none !important; }
+  /* d62 (11/out/2026): o PAINEL EXECUTIVO no topo das abas Métricas e Financeiro (bloco d62 do js/admin.js). Os cartões
+     se ajeitam sozinhos pela largura e, até 520 px, ficam um por linha; o texto longo quebra em vez de alargar a página.
+     Só variáveis de cor do tema (claro e escuro). Aqui, e não no css/style.css, que é medido na abertura do app. */
+  .d62 { margin-bottom:18px; }
+  .d62-titulo { margin:0 0 2px; font-size:16px; }
+  .d62-sub { margin:0 0 10px; font-size:12px; }
+  .d62-grade { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:10px; }
+  .d62-card { padding:12px; min-width:0; overflow-wrap:anywhere; }
+  .d62-rotulo { font-size:12.5px; color:var(--text-2); }
+  .d62-valor { font-size:22px; font-weight:700; margin:4px 0 2px; line-height:1.2; }
+  .d62-base { font-size:11.5px; color:var(--text-2); }
+  .d62-nota { font-size:11.5px; color:var(--text-3); margin-top:4px; }
+  @media (max-width:520px) { .d62-grade { grid-template-columns:1fr; } }
+  /* d67 (12/out/2026): KPIs e metas logo abaixo do painel executivo (bloco d67 do js/admin.js; motor no js/kpis.js). Um
+     card por KPI com o gráfico em SVG que encolhe com a largura; até 520 px, um por linha. Só variáveis do tema. */
+  .d67 { margin-bottom:18px; }
+  .d67-titulo { margin:0 0 2px; font-size:16px; }
+  .d67-sub { margin:0 0 10px; font-size:12px; }
+  .d67-aviso { margin:0 0 10px; font-size:12.5px; color:var(--amber); }
+  .d67-grade { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:10px; }
+  .d67-card { padding:12px; min-width:0; overflow-wrap:anywhere; }
+  .d67-topo { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .d67-rotulo { font-size:12.5px; color:var(--text-2); }
+  .d67-ajuda summary { cursor:pointer; font-weight:700; color:var(--blue); min-width:24px; text-align:center; list-style:none; }
+  .d67-ajuda p { font-size:11.5px; color:var(--text-2); margin:6px 0 0; }
+  .d67-valor { font-size:22px; font-weight:700; margin:4px 0 2px; line-height:1.2; }
+  .d67-base, .d67-meta { font-size:11.5px; color:var(--text-2); }
+  .d67-graf { display:block; width:100%; height:auto; margin-top:6px; }
+  .d67-legenda { font-size:11px; color:var(--text-3); margin-top:2px; }
+  .d67-metas { margin-top:12px; padding:12px; }
+  .d67-form { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:8px; margin-bottom:8px; }
+  .d67-form label { display:flex; flex-direction:column; gap:3px; font-size:12px; color:var(--text-2); min-width:0; }
+  .d67-ref { font-size:11.5px; margin:4px 0; }
+  .d67-frase { font-size:12.5px; margin:8px 0 0; }
+  .d67-frase-ok { color:var(--green); }
+  .d67-frase-erro { color:var(--red); }
+  .d67-hist { margin-top:10px; font-size:12px; }
+  /* d67 fatia 2 (17/out/2026): « Ampliar » ao lado do « ? »; o card ampliado ocupa a linha inteira da grade, com o gráfico
+     grande, as seções « O que este indicador mede » e « De onde vêm os dados » (duas colunas a partir de 720 px) e a tabela
+     dos 12 meses. No celular a grade já é de uma coluna: o card só fica mais alto. O invólucro .d67-acoes ENCOLHE
+     (min-width:0), como o « ? » encolhia antes dele: aberto, o « ? » quebra a fórmula dentro do card em vez de alargá-lo
+     para fora; só o botão não encolhe (com o overflow-wrap:anywhere do card, ele quebraria letra a letra). */
+  .d67-acoes { display:flex; align-items:flex-start; gap:6px; min-width:0; }
+  .d67-acoes > .btn { flex-shrink:0; }
+  .d67-card-ampliado { grid-column:1 / -1; }
+  .d67-graf-ampliado { margin-top:10px; }
+  .d67-amp { display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px; }
+  .d67-amp-sec p { font-size:12px; color:var(--text-2); margin:4px 0 0; }
+  .d67-amp-tit { margin:0; font-size:13px; }
+  .d67-amp-tab { overflow-x:auto; }
+  .d67-meses { font-size:12px; }
+  .d67-meses caption { text-align:left; font-size:11.5px; color:var(--text-3); padding-bottom:4px; }
+  .d67-diminuir-fim { margin-top:10px; }
+  @media (min-width:720px) { .d67-amp { grid-template-columns:1fr 1fr; } .d67-amp-tab { grid-column:1 / -1; } }
+  @media (max-width:520px) { .d67-grade { grid-template-columns:1fr; } .d67-form { grid-template-columns:1fr; } }
+  /* e33 (17/out/2026): a calculadora de Viabilidade dentro do Admin (bloco e33 do js/admin.js; motor no
+     js/viabilidade-motor.js). Premissas à esquerda e resultados à direita; até 820 px, uma coluna. Tabelas largas rolam
+     dentro do card, nunca a página. Só variáveis do tema (claro e escuro). */
+  .e33-topo { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+  .e33-barra { display:flex; flex-wrap:wrap; align-items:flex-end; gap:8px; padding:12px; margin-bottom:12px; }
+  .e33-estado { font-size:12.5px; min-width:0; overflow-wrap:anywhere; }
+  .e33-ok { color:var(--green); } .e33-erro { color:var(--red); }
+  .e33-aviso { margin:0 0 12px; font-size:13px; color:var(--amber); }
+  .e33-grade { display:grid; grid-template-columns:290px minmax(0, 1fr); gap:12px; align-items:start; }
+  .e33-campos { padding:10px 12px; }
+  .e33-grupo { border-bottom:1px solid var(--border); padding:6px 0; }
+  .e33-grupo summary { cursor:pointer; font-weight:600; font-size:13px; padding:4px 0; }
+  .e33-rotulo { display:flex; flex-direction:column; gap:3px; font-size:12px; color:var(--text-2); margin:8px 0; min-width:0; }
+  .e33-unid { color:var(--text-3); }
+  .e33-check { display:flex; align-items:center; gap:6px; font-size:12.5px; margin:8px 0; }
+  .e33-principal { min-width:0; }
+  .e33-abas { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+  .e33-principal .card { padding:12px; margin-bottom:12px; min-width:0; }
+  .e33-nota { display:flex; gap:12px; align-items:center; }
+  .e33-letra { font-size:26px; font-weight:800; width:46px; height:46px; display:flex; align-items:center; justify-content:center; border-radius:10px; border:2px solid var(--border); flex:none; }
+  .e33-letra-A { color:var(--green); border-color:var(--green); } .e33-letra-B { color:var(--blue); border-color:var(--blue); }
+  .e33-letra-C { color:var(--amber); border-color:var(--amber); } .e33-letra-D { color:var(--red); border-color:var(--red); }
+  .e33-kpis { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:10px; margin-bottom:12px; }
+  .e33-kpi { overflow-wrap:anywhere; }
+  .e33-kpi-rot { font-size:12px; color:var(--text-2); }
+  .e33-kpi-val { font-size:20px; font-weight:700; margin:4px 0 2px; }
+  .e33-kpi-sub { font-size:11.5px; color:var(--text-3); }
+  .e33-ruim .e33-kpi-val { color:var(--red); }
+  .e33-duas { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px; }
+  .e33-h { margin:0 0 8px; font-size:14px; }
+  .e33-num { text-align:right; white-space:nowrap; }
+  .e33-rola { overflow-x:auto; }
+  .e33-dre td:first-child { white-space:nowrap; }
+  .e33-graf { display:block; width:100%; height:auto; }
+  .e33-legenda { font-size:11.5px; color:var(--text-3); margin:6px 0 0; }
+  .e33-lista { margin:0; padding-left:18px; font-size:13px; } .e33-lista li { margin-bottom:8px; }
+  .e33-melhor { color:var(--green); font-weight:700; } .e33-pior { color:var(--red); } .e33-meio { color:var(--amber); }
+  .e33-confirma { display:inline-flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:12.5px; }
+  .e33-novo { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; margin-top:10px; }
+  @media (max-width:820px) { .e33-grade { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="logo">
+    <div class="logo-icon"><i class="ti ti-building-arch"></i></div>
+    <span>Civilbook · Admin</span>
+  </div>
+  <div class="nav-right" style="display:flex;gap:10px">
+    <a class="btn" href="app.html"><i class="ti ti-layout-dashboard"></i>App</a>
+    <button class="btn" onclick="AUTH.logout()"><i class="ti ti-logout"></i>Sair</button>
+  </div>
+</header>
+
+<div id="admin-nav" class="adm-tabs">
+  <button class="adm-tab active" data-view="metricas" onclick="showAdminView('metricas')"><i class="ti ti-chart-bar"></i> Métricas</button>
+  <button class="adm-tab" data-view="usuarios" onclick="showAdminView('usuarios')"><i class="ti ti-users"></i> Usuários</button>
+  <button class="adm-tab" data-view="marketing" onclick="showAdminView('marketing')"><i class="ti ti-speakerphone"></i> Marketing</button>
+  <button class="adm-tab" data-view="feedback" onclick="showAdminView('feedback')"><i class="ti ti-message-2-heart"></i> Feedback</button>
+  <button class="adm-tab" data-view="suporte" onclick="showAdminView('suporte')"><i class="ti ti-lifebuoy"></i> Suporte</button>
+  <button class="adm-tab" data-view="financeiro" onclick="showAdminView('financeiro')"><i class="ti ti-cash"></i> Financeiro</button>
+  <button class="adm-tab" data-view="repositorio" onclick="showAdminView('repositorio')"><i class="ti ti-file-certificate"></i> Repositório</button>
+  <button class="adm-tab" data-view="integracoes" onclick="showAdminView('integracoes')"><i class="ti ti-plug-connected"></i> Integrações</button>
+  <button class="adm-tab" data-view="baseia" onclick="showAdminView('baseia')"><i class="ti ti-database-import"></i> Base IA</button>
+  <button class="adm-tab" data-view="saude" onclick="showAdminView('saude')"><i class="ti ti-heartbeat"></i> Saúde</button>
+  <button class="adm-tab" data-view="seguranca" onclick="showAdminView('seguranca')"><i class="ti ti-shield-lock"></i> Segurança</button>
+  <button class="adm-tab" data-view="plano" onclick="showAdminView('plano')"><i class="ti ti-list-check"></i> Plano</button>
+  <button class="adm-tab" data-view="viabilidade" onclick="showAdminView('viabilidade')"><i class="ti ti-calculator"></i> Viabilidade</button>
+</div>
+
+<div id="admin" class="adm-body"></div>
+
+<script src="js/auth.js?v=4d8337e"></script>
+<script src="js/ui.js?v=4d8337e"></script>
+<script src="js/cbselect.js?v=4d8337e"></script>
+<script src="js/feedback.js?v=4d8337e"></script>
+<script src="js/roadmap.js?v=4d8337e"></script>
+<script src="js/financeiro.js?v=4d8337e"></script>
+<script src="js/risco.core.js?v=4d8337e"></script>
+<script src="js/risco.js?v=4d8337e"></script>
+<script src="js/previsao.js?v=4d8337e"></script>
+<script src="js/repositorio.js?v=4d8337e"></script>
+<script src="js/precos.js?v=4d8337e"></script>
+<script src="js/conta.js?v=4d8337e"></script>
+<script src="js/escala.js?v=4d8337e"></script>
+<script src="js/saude.js?v=4d8337e"></script>
+<script src="js/insights.js?v=4d8337e"></script>
+<!-- e33 (17/out/2026): o motor da calculadora de Viabilidade (só fórmulas; os números moram na tabela só-admin da 0137).
+     Fica antes do js/kpis.js, que o tests/kpis.check.mjs exige colado ao js/admin.js. -->
+<script src="js/viabilidade-motor.js?v=4d8337e"></script>
+<script src="js/kpis.js?v=4d8337e"></script>
+<script src="js/admin.js?v=4d8337e"></script>
+<script>
+  // Gate: exige backend + sessão + role=admin.
+  window.cbInit = function () {
+    const el = document.getElementById("admin");
+    if (!(window.CB_CONFIG && window.CB_CONFIG.SUPA_READY)) {
+      el.innerHTML = `<div class="card"><p>O painel admin exige o backend (Supabase) configurado.</p></div>`;
+      return;
+    }
+    // a41 (17/set/2026): com o boot otimista pode haver sessão PENDENTE (sem cache de perfil + SDK lento).
+    // Não é "deslogado": espera o SDK responder em vez de mandar ao login quem está logado.
+    var _pend = !AUTH.session() && AUTH.sessaoPendente && AUTH.sessaoPendente();
+    if (_pend) { _pend.then(window.cbInit); return; }
+    if (!AUTH.session()) {
+      // a47 (19/set/2026): só vai ao login quem o SDK já disse que não tem sessão E não tem nada guardado. Sessão
+      // guardada que o SDK não confirmou: diz isso e dá as saídas; se a sessão chegar, o painel abre sozinho.
+      if (typeof AUTH.podeIrAoLogin === "function" && !AUTH.podeIrAoLogin()) {
+        el.innerHTML = `<div class="card" role="alert" style="max-width:520px;margin:40px auto;text-align:center;padding:28px">
+          <p style="color:var(--text-2);margin-bottom:14px">Não consegui confirmar sua sessão. Pode ser a conexão ou o servidor de login.</p>
+          <p><button class="btn primary" onclick="location.reload()"><i class="ti ti-refresh"></i>Tentar de novo</button>
+          <a class="btn" href="index.html#entrar"><i class="ti ti-login"></i>Entrar de novo</a></p>
+        </div>`;
+        if (!window._cbAdmOuvindo && typeof AUTH.aoMudarSessao === "function") {
+          window._cbAdmOuvindo = true;
+          AUTH.aoMudarSessao(function (s) { if (s) window.cbInit(); });
+        }
+        return;
+      }
+      window.location.href = "index.html#entrar"; return;
+    }
+    // a47: perfil PROVISÓRIO (1º acesso no aparelho, perfil ainda no ar: role "user" por padrão) não decide "não é
+    // admin" — espera a carga em curso. Depois dela decide com o que houver; a re-tentativa, se o perfil chegar mais
+    // tarde, redesenha por cbPerfilMudou (abaixo). Uma espera só, e quem redesenha é ela: a mesma carga, quando muda o
+    // role, também dispara cbPerfilMudou — antes o painel saía duas vezes (10 consultas às métricas em vez de 5).
+    var _perf = AUTH.perfilPendente && AUTH.perfilPendente();
+    if (_perf) {
+      if (!window._cbAdmEsperaPerfil) {
+        window._cbAdmEsperaPerfil = true;
+        _perf.then(function () { window._cbAdmEsperaPerfil = false; window.cbInit(); });
+      }
+      return;
+    }
+    // a47 (céticos, 19/set/2026): a carga terminou SEM ler o perfil (falhou ou estourou o prazo; a re-tentativa vem em
+    // 3 s, 10 s e 30 s) e ele segue PROVISÓRIO. "Acesso restrito (role: user)" aqui seria decidir com o padrão, não com
+    // o perfil. Diz que está lendo e espera a 1ª leitura boa (AUTH.depoisDoPerfil), uma vez; quem redesenha é ela.
+    if (AUTH.perfilProvisorio && AUTH.perfilProvisorio()) {
+      el.innerHTML = `<div class="card" role="status" style="max-width:520px;margin:40px auto;text-align:center;padding:28px">
+        <p style="color:var(--text-2);margin-bottom:14px">Ainda não consegui ler o seu perfil. Tentando de novo…</p>
+        <p><button class="btn primary" onclick="location.reload()"><i class="ti ti-refresh"></i>Tentar de novo</button></p>
+      </div>`;
+      if (!window._cbAdmEsperaPerfil && typeof AUTH.depoisDoPerfil === "function") {
+        window._cbAdmEsperaPerfil = true;
+        AUTH.depoisDoPerfil(function () { window._cbAdmEsperaPerfil = false; window.cbInit(); });
+      }
+      return;
+    }
+    if (!AUTH.isAdmin()) {
+      el.innerHTML = `<div class="card" style="max-width:520px;margin:40px auto;text-align:center;padding:36px">
+        <div class="card-icon" style="background:var(--red-light);color:var(--red);margin:0 auto 14px"><i class="ti ti-lock"></i></div>
+        <h2 style="font-size:19px;font-weight:600;margin-bottom:6px">Acesso restrito</h2>
+        <p style="color:var(--text-2)">Esta área é só para administradores. Sua conta é <strong>${AUTH.session().email}</strong> (role: ${AUTH.session().role}).</p>
+        <p style="margin-top:14px"><a class="btn" href="app.html"><i class="ti ti-arrow-left"></i>Voltar ao app</a></p>
+      </div>`;
+      return;
+    }
+    document.getElementById("admin-nav").style.display = "flex";
+    renderAdmin();
+  };
+  // a41: se a revalidação do perfil mudar o role (ex.: 1º acesso no aparelho, perfil chegou depois), redesenha.
+  // O painel continua protegido no servidor (RLS/RPC); isto é só a tela acompanhando o perfil confirmado.
+  // a47: com o cbInit esperando o perfil (_cbAdmEsperaPerfil), quem redesenha é a espera — uma vez só.
+  window.cbPerfilMudou = function () { if (window._cbAdmEsperaPerfil) return; if (typeof window.cbInit === "function") window.cbInit(); };
+</script>
+<!-- SDK Supabase vendorizado (local-first); supa.js usa window.supabase e só cai p/ esm.sh se faltar -->
+<script src="js/vendor/supabase.js?v=4d8337e"></script>
+<script type="module" src="js/supa.js?v=4d8337e"></script>
+</body>
+</html>
