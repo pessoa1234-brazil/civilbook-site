@@ -1,0 +1,9 @@
+// Civilbook - Codigo proprietario. (c) 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.).
+// Todos os direitos reservados. Proibida copia, redistribuicao, modificacao ou
+// uso sem autorizacao escrita do titular. Ver LICENSE (Lei 9.609/98 e 9.610/98).
+// Componentes de terceiros mantem suas proprias licencas.
+const CBStore={online(){return typeof AUTH!=="undefined"&&AUTH.isSupa()&&!!AUTH.session()},uid(){const e=typeof AUTH!=="undefined"&&AUTH.session();return e?e.id:null},uuid(){if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,e=>{const t=Math.random()*16|0,r=e==="x"?t:t&3|8;return r.toString(16)})},lsGet(e,t){try{const r=JSON.parse(localStorage.getItem(e));return r==null?t:r}catch{return t}},lsSet(e,t){try{localStorage.setItem(e,JSON.stringify(t))}catch(r){}},loadingCard(e){const t=`<div class="card" style="margin-bottom:10px">
+      <div class="skel" style="height:15px;width:42%;margin-bottom:12px"></div>
+      <div class="skel" style="height:10px;width:82%;margin-bottom:7px"></div>
+      <div class="skel" style="height:10px;width:64%"></div>
+    </div>`;return t+t+t},async upsert(e,t,r){if(!this.online())return{skipped:true};try{const n=r?{onConflict:r}:void 0;const{error:o}=await window.supa.from(e).upsert(t,n);if(o)console.warn("CBStore.upsert "+e+":",o.message);return{error:o}}catch(n){console.warn("CBStore.upsert "+e+":",n&&n.message);return{error:n}}},async remove(e,t){if(!this.online())return{skipped:true};try{const{error:r}=await window.supa.from(e).delete().match(t);if(r)console.warn("CBStore.remove "+e+":",r.message);return{error:r}}catch(r){console.warn("CBStore.remove "+e+":",r&&r.message);return{error:r}}},async select(e,t){if(!this.online())return{data:null,error:{message:"offline"}};try{return await window.supa.from(e).select(t||"*")}catch(r){return{data:null,error:r}}}};if(typeof window!=="undefined")window.CBStore=CBStore;

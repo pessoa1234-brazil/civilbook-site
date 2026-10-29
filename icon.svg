@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="104" fill="#185FA5"/>
+  <g fill="#ffffff">
+    <!-- skyline de três torres -->
+    <rect x="138" y="250" width="66" height="150" rx="9"/>
+    <rect x="223" y="196" width="66" height="204" rx="9"/>
+    <rect x="308" y="282" width="66" height="118" rx="9"/>
+    <!-- linha de base / terreno -->
+    <rect x="116" y="392" width="280" height="24" rx="10"/>
+  </g>
+  <!-- janelas -->
+  <g fill="#185FA5">
+    <rect x="156" y="272" width="14" height="14" rx="3"/>
+    <rect x="172" y="272" width="14" height="14" rx="3"/>
+    <rect x="156" y="296" width="14" height="14" rx="3"/>
+    <rect x="172" y="296" width="14" height="14" rx="3"/>
+    <rect x="241" y="218" width="14" height="14" rx="3"/>
+    <rect x="257" y="218" width="14" height="14" rx="3"/>
+    <rect x="241" y="242" width="14" height="14" rx="3"/>
+    <rect x="257" y="242" width="14" height="14" rx="3"/>
+    <rect x="241" y="266" width="14" height="14" rx="3"/>
+    <rect x="257" y="266" width="14" height="14" rx="3"/>
+    <rect x="326" y="304" width="14" height="14" rx="3"/>
+    <rect x="342" y="304" width="14" height="14" rx="3"/>
+  </g>
+</svg>
