@@ -1,0 +1,36 @@
+// Civilbook - Codigo proprietario. (c) 2026 CB Desenvolvimento de Software Não Customizável Inova Simples (I.S.).
+const CONFER={_opts:{},_STATUS:{ok:["OK","#1a7a4a","rgba(26,122,74,.12)"],atencao:["Atenção","#c97a00","rgba(201,122,0,.12)"],nao_conforme:["Não conforme","#c0392b","rgba(192,57,43,.1)"]},_esc(e){return typeof esc==="function"?esc(e):String(e==null?"":e).replace(/[&<>"]/g,a=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[a])},_pill(e){const a=this._STATUS[e]||[e||"—","var(--text-3)","var(--bg)"];return`<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:${a[2]};color:${a[1]};white-space:nowrap">${this._esc(a[0])}</span>`},_btnMini(e,a){return`<button onclick="${a}" style="font-size:11px;padding:3px 9px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text-2);cursor:pointer">${this._esc(e)}</button>`},_achadoHTML(e,a,t){const o=a.revisao==="resolvido"||a.revisao==="ignorado";const i=a.revisao==="resolvido"?`<span class="pill pill-teal" style="font-size:10px">resolvido</span>`:a.revisao==="ignorado"?`<span class="pill pill-gray" style="font-size:10px">ignorado</span>`:"";return`<div style="padding:9px 0;border-top:1px solid var(--border);${o?"opacity:.55":""}">
+      <div style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap">
+        ${this._pill(a.status)}
+        <strong style="font-size:13px;flex:1;min-width:160px">${this._esc(a.item)}</strong>${i}
+      </div>
+      ${a.justificativa?`<p style="font-size:12.5px;color:var(--text-2);margin:5px 0 0;line-height:1.5">${this._esc(a.justificativa)}</p>`:""}
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px">
+        ${a.fonte?`<span style="font-size:11px;color:var(--text-3)"><i class="ti ti-quote" aria-hidden="true"></i> ${this._esc(a.fonte)}</span>`:""}
+        <span style="margin-left:auto;display:inline-flex;gap:6px">
+          ${a.revisao!=="resolvido"?this._btnMini("Resolver",`CONFER.setAchado('${e}',${t},'resolvido')`):""}
+          ${a.revisao!=="ignorado"?this._btnMini("Ignorar",`CONFER.setAchado('${e}',${t},'ignorado')`):""}
+          ${a.revisao&&a.revisao!=="aberto"?this._btnMini("Reabrir",`CONFER.setAchado('${e}',${t},'aberto')`):""}
+        </span>
+      </div>
+    </div>`},_conferenciaHTML(e){const a=Array.isArray(e.achados)?e.achados:[];const t={nao_conforme:0,atencao:0,ok:0};a.forEach(s=>{if(t[s.status]!=null)t[s.status]++});const o=t.nao_conforme?"#c0392b":t.atencao?"#c97a00":"#1a7a4a";const i=e.created_at?new Date(e.created_at).toLocaleString("pt-BR"):"";return`<div class="card" style="margin-top:10px;border-left:3px solid ${o}">
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center">
+        <strong style="font-size:13px">${this._esc(e.resumo||"Conferência")}</strong>
+        <span style="font-size:11px;color:var(--text-3)">${this._esc(i)}</span>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap">
+        ${t.nao_conforme?`<span style="font-size:11px;color:#c0392b;font-weight:700">${t.nao_conforme} não conforme</span>`:""}
+        ${t.atencao?`<span style="font-size:11px;color:#c97a00;font-weight:700">${t.atencao} atenção</span>`:""}
+        ${t.ok?`<span style="font-size:11px;color:#1a7a4a;font-weight:700">${t.ok} ok</span>`:""}
+      </div>
+      ${a.length?a.map((s,n)=>this._achadoHTML(e.id,s,n)).join(""):`<p class="page-sub" style="margin:8px 0 0">Sem achados — nada a apontar com a base disponível.</p>`}
+      <p style="font-size:11px;color:var(--text-3);margin:8px 0 0"><i class="ti ti-info-circle" aria-hidden="true"></i> Apoio — não substitui o responsável técnico.</p>
+    </div>`},async _historico(e,a){if(!window.supa)return[];try{const{data:t}=await window.supa.from("ia_conferencias").select("id,resumo,achados,created_at").eq("alvo_tipo",e).eq("alvo_id",a).order("created_at",{ascending:false}).limit(5);return t||[]}catch(t){return[]}},async montarCard(e,a){const t=document.getElementById(e);if(!t||!a)return;this._opts[e]=a;const o=await this._historico(a.alvoTipo,a.alvoId);const i=a.heading||"Conferência de conformidade (IA)";const s=a.descricao||"Confere com as normas, com fonte. É apoio: confirme com o RT.";const n=typeof a.ajuda==="string"?a.ajuda:typeof cbFaq==="function"?cbFaq("conferencia-ia"):"";const c=a.btnLabel||"Conferir conformidade";t.innerHTML=`<div class="card" style="margin-bottom:14px;border-left:3px solid var(--blue)">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <h3 style="margin:0"><i class="ti ti-clipboard-check" aria-hidden="true"></i> ${this._esc(i)} ${n}</h3>
+        <button class="btn primary" onclick="CONFER.conferir('${e}')"><i class="ti ti-shield-check" aria-hidden="true"></i> ${this._esc(o.length?"Conferir de novo":c)}</button>
+      </div>
+      <p class="page-sub" style="margin:6px 0 0">${this._esc(s)}</p>
+      <div id="${e}-res">${o.length?this._conferenciaHTML(o[0]):""}</div>
+      ${o.length>1?`<p class="page-sub" style="margin:8px 0 0;font-size:12px">${o.length-1} conferência(s) anterior(es).</p>`:""}
+    </div>`},async conferir(e){const a=this._opts[e];if(!a)return;const t=document.getElementById(e+"-res");const o=window.CB_CONFIG||{};const i=typeof a.dados==="function"?a.dados():a.dados||"";if(!i||i.trim().length<20){if(t)t.innerHTML=`<p class="page-sub">Sem dados suficientes para conferir.</p>`;return}if(!window.supa||!o.FUNCTIONS_URL){if(t)t.innerHTML=`<p class="page-sub">A conferência exige a conta conectada.</p>`;return}if(t)t.innerHTML=`<p class="page-sub" style="margin-top:8px"><i class="ti ti-loader" aria-hidden="true"></i> Conferindo conformidade…</p>`;try{const{data:{session:s}}=await window.supa.auth.getSession();const n=s&&s.access_token;const c=a.endpoint||"conferir-conformidade";const p=await fetch(o.FUNCTIONS_URL+"/"+c,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+n,"apikey":o.SUPABASE_ANON_KEY},body:JSON.stringify({alvoTipo:a.alvoTipo,alvoId:a.alvoId,projetoId:a.projetoId||null,titulo:a.titulo||null,dados:i,...a.extra||{}})});const r=await p.json().catch(()=>({}));if(!p.ok){if(t)t.innerHTML=`<div class="card" style="margin:8px 0 0"><p style="margin:0;font-size:13px"><i class="ti ti-alert-triangle" aria-hidden="true"></i> ${this._esc(r.error||"Erro "+p.status)}</p></div>`+(typeof cbNegacaoIABotaoHTML==="function"?cbNegacaoIABotaoHTML(r):"");return}await this.montarCard(e,a);if(typeof toast==="function")toast((r.achados?r.achados.length:0)+" achado(s) na conferência.","success")}catch(s){if(t)t.innerHTML=`<p class="page-sub">Não foi possível conferir agora. Tente de novo em instantes.</p>`}},async setAchado(e,a,t){if(!window.supa)return;try{const{data:o}=await window.supa.from("ia_conferencias").select("achados").eq("id",e).single();const i=o&&Array.isArray(o.achados)?o.achados:[];if(!i[a])return;i[a].revisao=t;const{error:s}=await window.supa.from("ia_conferencias").update({achados:i}).eq("id",e);if(s){if(typeof toast==="function")toast("Erro: "+s.message,"error");return}for(const n in this._opts){this.montarCard(n,this._opts[n])}}catch(o){}}};if(typeof window!=="undefined")window.CONFER=CONFER;
